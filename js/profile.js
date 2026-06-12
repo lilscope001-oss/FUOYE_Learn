@@ -37,14 +37,3 @@ document.getElementById(
 user.badges.length
 ? user.badges.join(", ")
 : "No badges yet";
-
-function logout(){
-
-localStorage.removeItem(
-"fuoye_current_user"
-);
-
-window.location.href =
-"login.html";
-
-}

@@ -102,6 +102,17 @@ body{
     color:#ffffff;
 }
 
+.nav-links a.logout-link,
+.nav-links-inline a.logout-link{
+    color:#d9534f;
+}
+
+.nav-links a.logout-link:hover,
+.nav-links-inline a.logout-link:hover{
+    background:rgba(217,83,79,.1);
+    color:#d9534f;
+}
+
 .back-link{
     display:inline-block;
     color:var(--primary-dark);

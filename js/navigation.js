@@ -6,3 +6,8 @@ function goBack(event) {
     window.location.href = 'index.html';
   }
 }
+
+function logout() {
+  localStorage.removeItem('fuoye_current_user');
+  window.location.href = 'login.html';
+}
