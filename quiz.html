@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Quiz Arena</title>
+
+<link rel="stylesheet"
+href="css/style.css">
+
+<style>
+
+.quiz-container{
+    max-width:800px;
+    margin:50px auto;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.question{
+    font-size:22px;
+    margin-bottom:20px;
+}
+
+.option{
+    background:#f4f4f4;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.option:hover{
+    background:#e6f7ef;
+}
+
+.quiz-btn{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    background:#3FAF7A;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.score-box{
+    text-align:center;
+    display:none;
+}
+
+.score-box h1{
+    color:#3FAF7A;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="courses.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <ul class="nav-links-inline">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="achievements.html">Achievements</a></li>
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    </ul>
+</header>
+
+<div class="quiz-container">
+
+<h1 id="courseTitle">
+Quiz Arena
+</h1>
+
+<div id="quizArea">
+
+<div id="question"
+class="question"></div>
+
+<div id="options"></div>
+
+<button
+id="nextBtn"
+class="quiz-btn">
+Next Question
+</button>
+
+</div>
+
+<div
+id="result"
+class="score-box">
+
+<h1>Quiz Completed 🎉</h1>
+
+<h2 id="scoreText"></h2>
+
+<p id="xpText"></p>
+
+<a href="courses.html"
+class="course-btn">
+Back To Courses
+</a>
+
+</div>
+
+</div>
+
+<script src="js/navigation.js"></script>
+<script src="js/quiz.js"></script>
+
+</body>
+</html>

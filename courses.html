@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courses | FUOYE Learn</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+.page-header{
+    margin-bottom:30px;
+}
+
+.page-header img{
+    display:block;
+    margin-bottom:20px;
+    max-width:160px;
+    width:100%;
+}
+
+.course-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.course-card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
+
+.course-banner{
+    background:#3FAF7A;
+    color:white;
+    padding:20px;
+}
+
+.course-content{
+    padding:20px;
+}
+
+.course-meta{
+    margin:10px 0;
+    color:#666;
+}
+
+.course-btn{
+    display:inline-block;
+    background:#D9B650;
+    color:black;
+    text-decoration:none;
+    padding:10px 15px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+.locked{
+    opacity:.6;
+}
+
+.locked .course-btn{
+    background:#999;
+    pointer-events:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="index.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <ul class="nav-links-inline">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="courses.html" class="active">Courses</a></li>
+        <li><a href="achievements.html">Achievements</a></li>
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    </ul>
+</header>
+
+<div class="main">
+
+<div class="page-header">
+    <img src="assets/Nacoss Fuoye chapter1 logo-.png" alt="NACOSS FUOYE Logo">
+
+<h1>Computer Science Courses</h1>
+
+<p>Select a course and test your knowledge.</p>
+
+</div>
+
+<div class="course-grid">
+
+<div class="course-card">
+
+<div class="course-banner">
+<h3>CSC101</h3>
+</div>
+
+<div class="course-content">
+
+<h2>Introduction to Computing</h2>
+
+<p>
+Learn computer fundamentals,
+hardware, software and information systems.
+</p>
+
+<div class="course-meta">
+Level: 100L
+</div>
+
+<a href="quiz.html?course=CSC101"
+class="course-btn">
+Take Quiz
+</a>
+
+</div>
+
+</div>
+
+<div class="course-card">
+
+<div class="course-banner">
+<h3>CSC201</h3>
+</div>
+
+<div class="course-content">
+
+<h2>Data Structures</h2>
+
+<p>
+Arrays, linked lists,
+queues, stacks and trees.
+</p>
+
+<div class="course-meta">
+Level: 200L
+</div>
+
+<a href="quiz.html?course=CSC201"
+class="course-btn">
+Take Quiz
+</a>
+
+</div>
+
+</div>
+
+<div class="course-card">
+
+<div class="course-banner">
+<h3>CSC301</h3>
+</div>
+
+<div class="course-content">
+
+<h2>Database Systems</h2>
+
+<p>
+Database design,
+SQL and normalization.
+</p>
+
+<div class="course-meta">
+Level: 300L
+</div>
+
+<a href="quiz.html?course=CSC301"
+class="course-btn">
+Take Quiz
+</a>
+
+</div>
+
+</div>
+
+<div class="course-card locked">
+
+<div class="course-banner">
+<h3>CSC401</h3>
+</div>
+
+<div class="course-content">
+
+<h2>Artificial Intelligence</h2>
+
+<p>
+Unlock after earning 300 XP.
+</p>
+
+<div class="course-meta">
+Locked
+</div>
+
+<a href="#"
+class="course-btn">
+Locked
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="js/navigation.js"></script>
+</body>
+</html>

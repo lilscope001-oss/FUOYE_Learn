@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Profile</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+.profile-container{
+max-width:700px;
+margin:50px auto;
+}
+
+.profile-card{
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 4px 15px rgba(0,0,0,.05);
+}
+
+.profile-item{
+margin-bottom:15px;
+}
+
+.profile-label{
+font-weight:bold;
+}
+
+.logout-btn{
+background:red;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="index.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <ul class="nav-links-inline">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="achievements.html">Achievements</a></li>
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="profile.html" class="active">Profile</a></li>
+    </ul>
+</header>
+
+<div class="profile-container">
+
+<div class="profile-card">
+
+<h1>👤 Student Profile</h1>
+
+<br>
+
+<div class="profile-item">
+<span class="profile-label">
+Name:
+</span>
+<span id="name"></span>
+</div>
+
+<div class="profile-item">
+<span class="profile-label">
+Email:
+</span>
+<span id="email"></span>
+</div>
+
+<div class="profile-item">
+<span class="profile-label">
+Matric:
+</span>
+<span id="matric"></span>
+</div>
+
+<div class="profile-item">
+<span class="profile-label">
+XP:
+</span>
+<span id="xp"></span>
+</div>
+
+<div class="profile-item">
+<span class="profile-label">
+Badges:
+</span>
+<span id="badges"></span>
+</div>
+
+<br>
+
+<button
+class="logout-btn"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+<script src="js/navigation.js"></script>
+<script src="js/profile.js"></script>
+
+</body>
+</html>

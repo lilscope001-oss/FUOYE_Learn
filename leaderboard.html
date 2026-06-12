@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Leaderboard</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+.leaderboard-container{
+max-width:900px;
+margin:40px auto;
+padding:20px;
+}
+
+.leaderboard-title{
+text-align:center;
+margin-bottom:30px;
+}
+
+.player{
+background:white;
+padding:18px;
+border-radius:12px;
+margin-bottom:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+
+.rank{
+font-size:20px;
+font-weight:bold;
+}
+
+.xp{
+background:#D9B650;
+padding:8px 12px;
+border-radius:20px;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="index.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <ul class="nav-links-inline">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="achievements.html">Achievements</a></li>
+        <li><a href="leaderboard.html" class="active">Leaderboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+    </ul>
+</header>
+
+<div class="leaderboard-container">
+
+<h1 class="leaderboard-title">
+🏆 Student Leaderboard
+</h1>
+
+<div id="leaderboardList"></div>
+
+</div>
+
+<script src="js/navigation.js"></script>
+<script src="js/leaderboard.js"></script>
+
+</body>
+</html>
