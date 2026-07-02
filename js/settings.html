@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Settings</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+.settings-container{
+max-width:800px;
+margin:40px auto;
+padding:20px;
+}
+
+.settings-card{
+background:white;
+padding:30px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+.form-group{
+margin-bottom:20px;
+}
+
+.form-group label{
+display:block;
+margin-bottom:8px;
+font-weight:bold;
+}
+
+.form-group input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+.btn{
+padding:12px 20px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-right:10px;
+}
+
+.btn-save{
+background:#3FAF7A;
+color:white;
+}
+
+.btn-danger{
+background:red;
+color:white;
+}
+
+.btn-dark{
+background:#222;
+color:white;
+}
+
+.dark-mode{
+background:#1e1e1e;
+color:white;
+}
+
+.dark-mode .settings-card{
+background:#2d2d2d;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="settings-container">
+
+<h1>⚙️ Settings</h1>
+
+<br>
+
+<div class="settings-card">
+
+<h3>Change Username</h3>
+
+<br>
+
+<div class="form-group">
+
+<label>New Username</label>
+
+<input
+type="text"
+id="usernameInput">
+
+</div>
+
+<button
+class="btn btn-save"
+onclick="changeUsername()">
+
+Save Changes
+
+</button>
+
+</div>
+
+<div class="settings-card">
+
+<h3>Appearance</h3>
+
+<br>
+
+<button
+class="btn btn-dark"
+onclick="toggleDarkMode()">
+
+Toggle Dark Mode
+
+</button>
+
+</div>
+
+<div class="settings-card">
+
+<h3>Account Actions</h3>
+
+<br>
+
+<button
+class="btn btn-danger"
+onclick="resetProgress()">
+
+Reset Progress
+
+</button>
+
+<button
+class="btn btn-danger"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+<script src="js/settings.js"></script>
+
+</body>
+
+</html>

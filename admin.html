@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Panel</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+.admin-container{
+max-width:1200px;
+margin:40px auto;
+padding:20px;
+}
+
+.admin-card{
+background:white;
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.edit-btn{
+background:#3FAF7A;
+color:white;
+}
+
+.delete-btn{
+background:red;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="index.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <ul class="nav-links-inline">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="courses.html">Courses</a></li>
+        <li><a href="achievements.html">Achievements</a></li>
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li>
+            <a href="settings.html">
+                ⚙️ Settings
+            </a>
+        </li>
+        <li><a href="javascript:void(0)" onclick="logout()" class="logout-link">Logout</a></li>
+    </ul>
+</header>
+
+<div class="admin-container">
+
+<h1>
+🛠 Admin Panel
+</h1>
+
+<br>
+
+<div class="admin-card">
+
+<h3>Registered Students</h3>
+
+<br>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>XP</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody id="userTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="js/admin.js"></script>
+
+</body>
+
+</html>
