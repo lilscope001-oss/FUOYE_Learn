@@ -5,14 +5,20 @@
 
 // Check Login
 
-const currentUser = JSON.parse(
-    localStorage.getItem(
-        "fuoye_current_user"
-    )
-);
+let currentUser = null;
 
-if (!currentUser) {
-    window.location.href = "login.html";
+async function initApp() {
+    currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    await dailyReward();
+    updateDashboard();
+    calculateProgress();
+    loadActivity();
 }
 
 // =============================
@@ -21,11 +27,7 @@ if (!currentUser) {
 
 function updateDashboard() {
 
-    const user = JSON.parse(
-        localStorage.getItem(
-            "fuoye_current_user"
-        )
-    );
+    const user = currentUser;
 
     if (!user) return;
 
@@ -139,11 +141,7 @@ function calculateLevel(xp) {
 
 function calculateProgress() {
 
-    const user = JSON.parse(
-        localStorage.getItem(
-            "fuoye_current_user"
-        )
-    );
+    const user = currentUser;
 
     if (!user) return;
 
@@ -184,28 +182,16 @@ function calculateProgress() {
 
 function loadActivity() {
 
-    const activity =
-        document.getElementById(
-            "activityList"
-        );
+    const activity = document.getElementById("activityList");
 
-    if (!activity) return;
+    if (!activity || !currentUser) return;
 
-    let history =
-        JSON.parse(
-            localStorage.getItem(
-                "activity_history"
-            )
-        ) || [];
+    const history = currentUser.activity_history || [];
 
     activity.innerHTML = "";
 
     if (history.length === 0) {
-
-        activity.innerHTML = `
-        <li>No activity yet</li>
-        `;
-
+        activity.innerHTML = `<li>No activity yet</li>`;
         return;
     }
 
@@ -213,134 +199,73 @@ function loadActivity() {
         .slice(-5)
         .reverse()
         .forEach(item => {
-
             activity.innerHTML += `
             <li>${item}</li>
             `;
-
         });
-
 }
 
 // =============================
 // Save Activity
 // =============================
 
-function saveActivity(text) {
+async function saveActivity(text) {
+    if (!currentUser) return;
 
-    let history =
-        JSON.parse(
-            localStorage.getItem(
-                "activity_history"
-            )
-        ) || [];
+    const history = currentUser.activity_history || [];
+    currentUser.activity_history = [...history, text];
 
-    history.push(text);
-
-    localStorage.setItem(
-        "activity_history",
-        JSON.stringify(history)
-    );
-
+    await updateUserDatabase(currentUser);
 }
 
 // =============================
 // Daily Reward
 // =============================
 
-function dailyReward() {
+async function dailyReward() {
+    if (!currentUser) return;
 
-    const today =
-        new Date()
-        .toDateString();
+    const today = new Date().toDateString();
+    const lastReward = currentUser.last_reward;
 
-    const lastReward =
-        localStorage.getItem(
-            "last_reward"
-        );
+    if (today === lastReward) return;
 
-    if (today === lastReward)
-        return;
+    currentUser.xp = (currentUser.xp || 0) + 10;
+    currentUser.last_reward = today;
 
-    const user =
-        JSON.parse(
-            localStorage.getItem(
-                "fuoye_current_user"
-            )
-        );
-
-    if (!user) return;
-
-    user.xp += 10;
-
-    localStorage.setItem(
-        "fuoye_current_user",
-        JSON.stringify(user)
-    );
-
-    updateUserDatabase(
-        user
-    );
-
-    localStorage.setItem(
-        "last_reward",
-        today
-    );
-
-    saveActivity(
-        "🎁 Daily login reward (+10 XP)"
-    );
-
+    await updateUserDatabase(currentUser);
+    await saveActivity("🎁 Daily login reward (+10 XP)");
 }
 
 // =============================
 // Update User Database
 // =============================
 
-function updateUserDatabase(
-    updatedUser
-) {
+async function updateUserDatabase(updatedUser) {
+    if (!updatedUser?.id) return;
 
-    let users =
-        JSON.parse(
-            localStorage.getItem(
-                "fuoye_users"
-            )
-        ) || [];
-
-    users = users.map(
-        user => {
-
-            if (
-                user.email ===
-                updatedUser.email
-            ) {
-
-                return updatedUser;
-
-            }
-
-            return user;
-
-        }
-    );
-
-    localStorage.setItem(
-        "fuoye_users",
-        JSON.stringify(users)
-    );
-
+    await updateUser(updatedUser.id, {
+        name: updatedUser.name,
+        email: updatedUser.email,
+        xp: updatedUser.xp,
+        streak: updatedUser.streak,
+        badges: updatedUser.badges,
+        level: updatedUser.level,
+        matric: updatedUser.matric,
+        activity_history: updatedUser.activity_history,
+        last_reward: updatedUser.last_reward,
+        last_visit: updatedUser.last_visit,
+        dark_mode: updatedUser.dark_mode,
+    });
 }
 
 // =============================
 // Logout
 // =============================
 
-function logout() {
+async function logout() {
 
-    localStorage.removeItem(
-        "fuoye_current_user"
-    );
+    await signOutUser();
 
     window.location.href =
         "login.html";
@@ -355,18 +280,11 @@ function isCourseUnlocked(
     requiredXP
 ) {
 
-    const user =
-        JSON.parse(
-            localStorage.getItem(
-                "fuoye_current_user"
-            )
-        );
-
-    if (!user)
+    if (!currentUser)
         return false;
 
     return (
-        user.xp >= requiredXP
+        (currentUser.xp || 0) >= requiredXP
     );
 
 }
@@ -375,13 +293,7 @@ function isCourseUnlocked(
 // Initialize
 // =============================
 
-dailyReward();
-
-updateDashboard();
-
-calculateProgress();
-
-loadActivity();
+initApp();
 
 // =============================
 // Global Access

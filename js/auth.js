@@ -1,165 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+const signupForm = document.getElementById("signupForm");
+const loginForm = document.getElementById("loginForm");
+const loginError = document.getElementById("loginError");
+const signupError = document.getElementById("signupError");
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Signup | FUOYE Learn</title>
-
-<link rel="stylesheet" href="css/style.css">
-
-<style>
-
-.auth-container{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    background:#FAF8F2;
+if (signupForm) {
+    signupForm.addEventListener("submit", handleSignup);
 }
 
-.auth-card{
-    width:100%;
-    max-width:450px;
-    background:#fff;
-    padding:40px;
-    border-radius:20px;
-    box-shadow:0 5px 20px rgba(0,0,0,.08);
+if (loginForm) {
+    loginForm.addEventListener("submit", handleLogin);
 }
 
-.auth-logo{
-    text-align:center;
-    color:#3FAF7A;
-    font-size:30px;
-    font-weight:bold;
-    margin-bottom:20px;
+async function handleSignup(event) {
+    event.preventDefault();
+
+    if (!signupForm) return;
+
+    const name = document.getElementById("name").value.trim();
+    const matric = document.getElementById("matric").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!name || !matric || !email || !password) {
+        showError(signupError, "Please fill out all fields.");
+        return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+    });
+
+    if (error) {
+        showError(signupError, error.message || "Signup failed.");
+        return;
+    }
+
+    const userRecord = {
+        id: data.user?.id,
+        name,
+        matric,
+        email,
+        xp: 0,
+        streak: 0,
+        badges: [],
+        level: "100L",
+        created_at: new Date().toISOString(),
+    };
+
+    const { error: insertError } = await insertUser(userRecord);
+
+    if (insertError) {
+        showError(signupError, insertError.message || "Could not create user record.");
+        return;
+    }
+
+    window.location.href = "login.html";
 }
 
-.auth-title{
-    text-align:center;
-    margin-bottom:20px;
+async function handleLogin(event) {
+    event.preventDefault();
+
+    if (!loginForm) return;
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    if (!email || !password) {
+        showError(loginError, "Please enter both email and password.");
+        return;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    });
+
+    if (error) {
+        showError(loginError, error.message || "Login failed.");
+        return;
+    }
+
+    window.location.href = "index.html";
 }
 
-.form-group{
-    margin-bottom:15px;
+function showError(element, message) {
+    if (!element) return;
+    element.innerText = message;
 }
-
-.form-group label{
-    display:block;
-    margin-bottom:5px;
-}
-
-.form-control{
-    width:100%;
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:8px;
-}
-
-.btn-auth{
-    width:100%;
-    background:#3FAF7A;
-    color:white;
-    border:none;
-    padding:14px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.btn-auth:hover{
-    background:#2F8E63;
-}
-
-.auth-link{
-    text-align:center;
-    margin-top:15px;
-}
-
-.auth-link a{
-    color:#3FAF7A;
-    text-decoration:none;
-}
-
-.error-message{
-    color:red;
-    text-align:center;
-    margin-bottom:10px;
-}
-
-</style>
-
-</head>
-<body>
-
-<div class="auth-container">
-
-<div class="auth-card">
-
-<div class="auth-logo">
-FUOYE Learn
-</div>
-
-<h2 class="auth-title">
-Create Account
-</h2>
-
-<div id="signupError" class="error-message"></div>
-
-<form id="signupForm">
-
-<div class="form-group">
-<label>Full Name</label>
-<input
-type="text"
-id="name"
-class="form-control"
-required>
-</div>
-
-<div class="form-group">
-<label>Matric Number</label>
-<input
-type="text"
-id="matric"
-class="form-control"
-required>
-</div>
-
-<div class="form-group">
-<label>Email</label>
-<input
-type="email"
-id="email"
-class="form-control"
-required>
-</div>
-
-<div class="form-group">
-<label>Password</label>
-<input
-type="password"
-id="password"
-class="form-control"
-required>
-</div>
-
-<button class="btn-auth">
-Create Account
-</button>
-
-</form>
-
-<div class="auth-link">
-Already have an account?
-<a href="login.html">Login</a>
-</div>
-
-</div>
-
-</div>
-
-<script src="js/auth.js"></script>
-
-</body>
-</html>

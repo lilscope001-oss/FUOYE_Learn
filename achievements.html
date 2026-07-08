@@ -81,71 +81,42 @@ opacity:.5;
 
 <script>
 
-const user = JSON.parse(
-localStorage.getItem(
-"fuoye_current_user"
-));
+async function initAchievements() {
+    const user = await getCurrentUser();
 
-const badges = [
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
 
-{
-name:"Beginner",
-xp:100,
-icon:"🌱"
-},
+    const badges = [
+        { name: "Beginner", xp: 100, icon: "🌱" },
+        { name: "Scholar", xp: 300, icon: "📚" },
+        { name: "Master Learner", xp: 500, icon: "🎓" },
+        { name: "Professor", xp: 1000, icon: "👑" }
+    ];
 
-{
-name:"Scholar",
-xp:300,
-icon:"📚"
-},
+    const container = document.getElementById("badgesContainer");
 
-{
-name:"Master Learner",
-xp:500,
-icon:"🎓"
-},
+    badges.forEach(badge => {
+        const unlocked = user && user.xp >= badge.xp;
 
-{
-name:"Professor",
-xp:1000,
-icon:"👑"
+        container.innerHTML += `
+        <div class="badge-card ${unlocked ? 'unlocked' : 'locked'}">
+            <div class="badge-icon">${badge.icon}</div>
+            <h3>${badge.name}</h3>
+            <p>Unlock at ${badge.xp} XP</p>
+        </div>
+        `;
+    });
 }
 
-];
-
-const container =
-document.getElementById(
-"badgesContainer"
-);
-
-badges.forEach(badge=>{
-
-const unlocked =
-user &&
-user.xp >= badge.xp;
-
-container.innerHTML += `
-
-<div class="badge-card ${unlocked ? 'unlocked' : 'locked'}">
-
-<div class="badge-icon">
-${badge.icon}
-</div>
-
-<h3>${badge.name}</h3>
-
-<p>
-Unlock at ${badge.xp} XP
-</p>
-
-</div>
-
-`;
-
-});
-
+initAchievements();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="js/supabase.js"></script>
+
 <script src="js/navigation.js"></script>
 
 </body>

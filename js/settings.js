@@ -1,188 +1,69 @@
-const currentUser =
-JSON.parse(
-localStorage.getItem(
-"fuoye_current_user"
-));
+let currentUser = null;
 
-if(!currentUser){
+async function changeUsername() {
+    const newName = document.getElementById('usernameInput').value.trim();
 
-window.location.href =
-"login.html";
+    if (!newName) {
+        alert('Please enter a username');
+        return;
+    }
 
+    currentUser.name = newName;
+    await updateUser(currentUser.id, { name: currentUser.name });
+
+    alert('Username updated successfully');
 }
 
-// =====================
-// CHANGE USERNAME
-// =====================
+async function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
 
-function changeUsername(){
+    const enabled = document.body.classList.contains('dark-mode');
 
-const newName =
-document.getElementById(
-"usernameInput"
-).value.trim();
+    if (!currentUser) return;
 
-if(!newName){
-
-alert(
-"Please enter a username"
-);
-
-return;
-
+    currentUser.dark_mode = enabled;
+    await updateUser(currentUser.id, { dark_mode: currentUser.dark_mode });
 }
 
-currentUser.name =
-newName;
-
-localStorage.setItem(
-"fuoye_current_user",
-JSON.stringify(
-currentUser
-)
-);
-
-let users =
-JSON.parse(
-localStorage.getItem(
-"fuoye_users"
-)
-) || [];
-
-users = users.map(user => {
-
-if(
-user.email ===
-currentUser.email
-){
-
-user.name = newName;
-
+function applySavedDarkMode() {
+    if (currentUser?.dark_mode === true) {
+        document.body.classList.add('dark-mode');
+    }
 }
 
-return user;
+async function initSettings() {
+    currentUser = await getCurrentUser();
 
-});
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
 
-localStorage.setItem(
-"fuoye_users",
-JSON.stringify(users)
-);
-
-alert(
-"Username updated successfully"
-);
-
+    applySavedDarkMode();
 }
 
-// =====================
-// DARK MODE
-// =====================
+initSettings();
 
-function toggleDarkMode(){
+async function resetProgress() {
+    const confirmReset = confirm('Reset all XP, badges and progress?');
 
-document.body.classList.toggle(
-"dark-mode"
-);
+    if (!confirmReset) return;
 
-const enabled =
-document.body.classList.contains(
-"dark-mode"
-);
+    currentUser.xp = 0;
+    currentUser.streak = 0;
+    currentUser.badges = [];
 
-localStorage.setItem(
-"darkMode",
-enabled
-);
+    await updateUser(currentUser.id, {
+        xp: currentUser.xp,
+        streak: currentUser.streak,
+        badges: currentUser.badges
+    });
 
+    alert('Progress reset successfully');
+    location.reload();
 }
 
-const savedDarkMode =
-localStorage.getItem(
-"darkMode"
-);
-
-if(savedDarkMode === "true"){
-
-document.body.classList.add(
-"dark-mode"
-);
-
-}
-
-// =====================
-// RESET PROGRESS
-// =====================
-
-function resetProgress(){
-
-const confirmReset =
-confirm(
-"Reset all XP, badges and progress?"
-);
-
-if(!confirmReset)
-return;
-
-currentUser.xp = 0;
-currentUser.streak = 0;
-currentUser.badges = [];
-
-localStorage.setItem(
-"fuoye_current_user",
-JSON.stringify(
-currentUser
-)
-);
-
-let users =
-JSON.parse(
-localStorage.getItem(
-"fuoye_users"
-)
-) || [];
-
-users = users.map(user => {
-
-if(
-user.email ===
-currentUser.email
-){
-
-user.xp = 0;
-user.streak = 0;
-user.badges = [];
-
-}
-
-return user;
-
-});
-
-localStorage.setItem(
-"fuoye_users",
-JSON.stringify(users)
-);
-
-alert(
-"Progress reset successfully"
-);
-
-location.reload();
-
-}
-
-// =====================
-// LOGOUT
-// =====================
-
-function logout(){
-
-localStorage.removeItem(
-"fuoye_current_user"
-);
-
-window.location.href =
-"login.html";
-
+async function logout() {
+    await signOutUser();
+    window.location.href = 'login.html';
 }

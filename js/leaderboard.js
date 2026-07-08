@@ -1,20 +1,14 @@
-let users =
-JSON.parse(
-localStorage.getItem(
-"fuoye_users"
-)
-) || [];
+async function initLeaderboard() {
+    const users = await fetchAllUsers();
 
-users.sort(
-(a,b)=>b.xp-a.xp
-);
+    users.sort((a, b) => (b.xp || 0) - (a.xp || 0));
 
-const container =
+    const container =
 document.getElementById(
 "leaderboardList"
 );
 
-users.forEach((user,index)=>{
+    users.forEach((user,index)=>{
 
 let medal = "";
 

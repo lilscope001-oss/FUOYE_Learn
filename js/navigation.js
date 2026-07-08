@@ -7,7 +7,7 @@ function goBack(event) {
   }
 }
 
-function logout() {
-  localStorage.removeItem('fuoye_current_user');
+async function logout() {
+  await signOutUser();
   window.location.href = 'login.html';
 }

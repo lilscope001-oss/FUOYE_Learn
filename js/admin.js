@@ -1,90 +1,47 @@
-let users =
-JSON.parse(
-localStorage.getItem(
-"fuoye_users"
-)
-) || [];
+let users = [];
 
-const table =
-document.getElementById(
-"userTable"
-);
+const table = document.getElementById("userTable");
 
-renderUsers();
+async function initAdmin() {
+    users = await fetchAllUsers();
+    renderUsers();
+}
+
+initAdmin();
 
 function renderUsers(){
+    table.innerHTML = "";
 
-table.innerHTML = "";
-
-users.forEach((user,index)=>{
-
-table.innerHTML += `
-
-<tr>
-
-<td>${user.name}</td>
-
-<td>${user.email}</td>
-
-<td>${user.xp || 0}</td>
-
-<td>
-
-<button
-class="edit-btn"
-onclick="addXP(${index})">
-
-+50 XP
-
-</button>
-
-<button
-class="delete-btn"
-onclick="deleteUser(${index})">
-
-Delete
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-});
-
+    users.forEach((user,index)=>{
+        table.innerHTML += `
+        <tr>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.xp || 0}</td>
+            <td>
+                <button class="edit-btn" onclick="addXP(${index})">+50 XP</button>
+                <button class="delete-btn" onclick="removeUser(${index})">Delete</button>
+            </td>
+        </tr>
+        `;
+    });
 }
 
-function addXP(index){
+async function addXP(index){
+    const user = users[index];
+    if (!user) return;
 
-users[index].xp =
-(users[index].xp || 0) + 50;
-
-localStorage.setItem(
-"fuoye_users",
-JSON.stringify(users)
-);
-
-renderUsers();
-
+    const updatedXP = (user.xp || 0) + 50;
+    await updateUser(user.id, { xp: updatedXP });
+    await initAdmin();
 }
 
-function deleteUser(index){
+async function removeUser(index){
+    const user = users[index];
+    if (!user) return;
 
-if(
-!confirm(
-"Delete this user?"
-)
-) return;
+    if (!confirm("Delete this user?")) return;
 
-users.splice(index,1);
-
-localStorage.setItem(
-"fuoye_users",
-JSON.stringify(users)
-);
-
-renderUsers();
-
+    await deleteUser(user.id);
+    await initAdmin();
 }

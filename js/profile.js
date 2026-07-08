@@ -1,39 +1,26 @@
-const user =
-JSON.parse(
-localStorage.getItem(
-"fuoye_current_user"
-));
+const { data,error } =
+await supabase.auth.signInWithPassword({
 
-if(!user){
+email,
 
-window.location.href =
-"login.html";
+password
 
-}
+});
 
-document.getElementById(
-"name"
-).innerText =
-user.name;
+await supabase
 
-document.getElementById(
-"email"
-).innerText =
-user.email;
+.from("users")
 
-document.getElementById(
-"matric"
-).innerText =
-user.matric;
+.insert({
 
-document.getElementById(
-"xp"
-).innerText =
-user.xp;
+id:data.user.id,
 
-document.getElementById(
-"badges"
-).innerText =
-user.badges.length
-? user.badges.join(", ")
-: "No badges yet";
+full_name:name,
+
+matric_number:matric,
+
+level:"100L",
+
+department:"Computer Science"
+
+});

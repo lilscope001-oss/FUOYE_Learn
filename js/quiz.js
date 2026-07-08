@@ -1,9 +1,15 @@
-const currentUser =
-JSON.parse(
-localStorage.getItem(
-"fuoye_current_user"
-)
-);
+let currentUser = null;
+
+async function initQuiz() {
+    currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+        window.location.href = "login.html";
+        return;
+    }
+}
+
+initQuiz();
 
 const quizData = {
 
@@ -238,7 +244,7 @@ loadQuestion();
 
 nextBtn.addEventListener(
 "click",
-()=>{
+async () => {
 
 if(selectedAnswer === null){
 
@@ -272,154 +278,62 @@ loadQuestion();
 
 }else{
 
-finishQuiz();
+await finishQuiz();
 
 }
 
 }
 );
 
-function finishQuiz(){
+async function finishQuiz(){
 
-document.getElementById(
-"quizArea"
-).style.display = "none";
+    document.getElementById(
+        "quizArea"
+    ).style.display = "none";
 
-document.getElementById(
-"result"
-).style.display = "block";
+    document.getElementById(
+        "result"
+    ).style.display = "block";
 
-const xpEarned =
-score * 50;
+    const xpEarned =
+        score * 50;
 
-document.getElementById(
-"scoreText"
-).innerText =
-Score: ${score}/${questions.length};
+    document.getElementById(
+        "scoreText"
+    ).innerText =
+        `Score: ${score}/${questions.length}`;
 
-document.getElementById(
-"xpText"
-).innerText =
-You earned ${xpEarned} XP;
+    document.getElementById(
+        "xpText"
+    ).innerText =
+        `You earned ${xpEarned} XP`;
 
-if(currentUser){
+    if (currentUser) {
+        currentUser.xp = (currentUser.xp || 0) + xpEarned;
+        currentUser.badges = currentUser.badges || [];
 
-currentUser.xp =
-(currentUser.xp || 0)
-+ xpEarned;
+        await updateUserDatabase(currentUser);
+    }
 
-let users =
-JSON.parse(
-localStorage.getItem(
-"fuoye_users"
-)
-) || [];
-
-users = users.map(user=>{
-
-if(user.email ===
-currentUser.email){
-
-user.xp =
-currentUser.xp;
-
+    await updateAchievements();
 }
 
-return user;
+async function updateAchievements() {
+    if (!currentUser) return;
 
-});
+    currentUser.badges = currentUser.badges || [];
 
-localStorage.setItem(
-"fuoye_users",
-JSON.stringify(users)
-);
+    if (currentUser.xp >= 100 && !currentUser.badges.includes("Beginner")) {
+        currentUser.badges.push("Beginner");
+    }
 
-localStorage.setItem(
-"fuoye_current_user",
-JSON.stringify(currentUser)
-);
+    if (currentUser.xp >= 300 && !currentUser.badges.includes("Scholar")) {
+        currentUser.badges.push("Scholar");
+    }
 
-}
+    if (currentUser.xp >= 500 && !currentUser.badges.includes("Master Learner")) {
+        currentUser.badges.push("Master Learner");
+    }
 
-updateAchievements(
-xpEarned
-);
-
-}
-
-function updateAchievements(){
-
-if(!currentUser) return;
-
-if(
-currentUser.xp >= 100 &&
-!currentUser.badges.includes(
-"Beginner"
-)
-){
-
-currentUser.badges.push(
-"Beginner"
-);
-
-}
-
-if(
-currentUser.xp >= 300 &&
-!currentUser.badges.includes(
-"Scholar"
-)
-){
-
-currentUser.badges.push(
-"Scholar"
-);
-
-}
-
-if(
-currentUser.xp >= 500 &&
-!currentUser.badges.includes(
-"Master Learner"
-)
-){
-
-currentUser.badges.push(
-"Master Learner"
-);
-
-}
-
-let users =
-JSON.parse(
-localStorage.getItem(
-"fuoye_users"
-)
-) || [];
-
-users = users.map(user=>{
-
-if(user.email ===
-currentUser.email){
-
-user.badges =
-currentUser.badges;
-
-}
-
-return user;
-
-});
-
-localStorage.setItem(
-"fuoye_users",
-JSON.stringify(users)
-);
-
-localStorage.setItem(
-"fuoye_current_user",
-JSON.
-stringify(currentUser)
-);
-
+    await updateUserDatabase(currentUser);
 }

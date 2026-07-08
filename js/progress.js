@@ -1,134 +1,53 @@
-const user =
-JSON.parse(
-localStorage.getItem(
-"fuoye_current_user"
-));
+let currentUser = null;
 
-if(!user){
+async function initProgress() {
+    currentUser = await getCurrentUser();
 
-window.location.href =
-"login.html";
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
 
+    renderProgress();
 }
 
-document.getElementById(
-"xpValue"
-).innerText =
-user.xp || 0;
+function renderProgress() {
+    document.getElementById('xpValue').innerText = currentUser.xp || 0;
+    document.getElementById('badgeValue').innerText = currentUser.badges ? currentUser.badges.length : 0;
 
-document.getElementById(
-"badgeValue"
-).innerText =
-user.badges
-? user.badges.length
-: 0;
+    let level = '100L';
+    if (currentUser.xp >= 600) level = '200L';
+    if (currentUser.xp >= 1200) level = '300L';
+    if (currentUser.xp >= 2000) level = '400L';
 
-let level = "100L";
+    document.getElementById('levelValue').innerText = level;
 
-if(user.xp >= 600)
-level = "200L";
+    const overall = Math.min((currentUser.xp / 2000) * 100, 100);
+    document.getElementById('overallProgress').style.width = overall + '%';
+    document.getElementById('overallText').innerText = overall.toFixed(0) + '% Completed';
 
-if(user.xp >= 1200)
-level = "300L";
+    const courses = [
+        { name: 'CSC101', progress: 100 },
+        { name: 'CSC201', progress: currentUser.xp >= 100 ? 75 : 20 },
+        { name: 'CSC301', progress: currentUser.xp >= 300 ? 50 : 0 },
+        { name: 'CSC401', progress: currentUser.xp >= 600 ? 20 : 0 }
+    ];
 
-if(user.xp >= 2000)
-level = "400L";
+    document.getElementById('courseValue').innerText = courses.filter(c => c.progress >= 100).length;
 
-document.getElementById(
-"levelValue"
-).innerText =
-level;
+    const container = document.getElementById('courseContainer');
+    container.innerHTML = '';
 
-const overall =
-Math.min(
-(user.xp / 2000) * 100,
-100
-);
-
-document.getElementById(
-"overallProgress"
-).style.width =
-overall + "%";
-
-document.getElementById(
-"overallText"
-).innerText =
-overall.toFixed(0)
-+ "% Completed";
-
-const courses = [
-
-{
-name:"CSC101",
-progress:100
-},
-
-{
-name:"CSC201",
-progress:
-user.xp >= 100
-? 75
-: 20
-},
-
-{
-name:"CSC301",
-progress:
-user.xp >= 300
-? 50
-: 0
-},
-
-{
-name:"CSC401",
-progress:
-user.xp >= 600
-? 20
-: 0
+    courses.forEach(course => {
+        container.innerHTML += `
+        <div class="course-item">
+            <div class="course-name">${course.name}</div>
+            <div class="small-progress">
+                <div class="small-fill" style="width:${course.progress}%"></div>
+            </div>
+            <br>${course.progress}% Complete
+        </div>`;
+    });
 }
 
-];
-
-document.getElementById(
-"courseValue"
-).innerText =
-courses.filter(
-c => c.progress >= 100
-).length;
-
-const container =
-document.getElementById(
-"courseContainer"
-);
-
-courses.forEach(course => {
-
-container.innerHTML += `
-
-<div class="course-item">
-
-<div class="course-name">
-
-${course.name}
-
-</div>
-
-<div class="small-progress">
-
-<div
-class="small-fill"
-style="width:${course.progress}%">
-
-</div>
-
-</div>
-
-<br>
-
-${course.progress}% Complete
-
-</div>
-
-`;
-
-});
+initProgress();
