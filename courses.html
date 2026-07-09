@@ -26,6 +26,30 @@
     gap:20px;
 }
 
+.course-tools{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr auto;
+    gap:12px;
+    align-items:center;
+    margin:24px 0;
+}
+
+.course-tools input,
+.course-tools select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:#fff;
+    color:#234B3D;
+}
+
+.course-count{
+    font-weight:bold;
+    color:#2F8E63;
+    white-space:nowrap;
+}
+
 .course-card{
     background:white;
     border-radius:15px;
@@ -37,10 +61,28 @@
     background:#3FAF7A;
     color:white;
     padding:20px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:center;
+}
+
+.course-banner span{
+    font-size:13px;
+    font-weight:bold;
 }
 
 .course-content{
     padding:20px;
+}
+
+.course-content h2{
+    font-size:20px;
+    margin-bottom:10px;
+}
+
+.course-content p{
+    line-height:1.5;
 }
 
 .course-meta{
@@ -65,6 +107,12 @@
 .locked .course-btn{
     background:#999;
     pointer-events:none;
+}
+
+@media(max-width:800px){
+    .course-tools{
+        grid-template-columns:1fr;
+    }
 }
 
 </style>
@@ -103,118 +151,24 @@
 
 </div>
 
-<div class="course-grid">
-
-<div class="course-card">
-
-<div class="course-banner">
-<h3>CSC101</h3>
+<div class="course-tools">
+    <input id="courseSearch" type="search" placeholder="Search course code, title, or topic">
+    <select id="levelFilter">
+        <option value="all">All levels</option>
+        <option value="100L">100L</option>
+        <option value="200L">200L</option>
+        <option value="300L">300L</option>
+        <option value="400L">400L</option>
+    </select>
+    <select id="semesterFilter">
+        <option value="all">All semesters</option>
+        <option value="First Semester">First Semester</option>
+        <option value="Second Semester">Second Semester</option>
+    </select>
+    <span id="courseCount" class="course-count"></span>
 </div>
 
-<div class="course-content">
-
-<h2>Introduction to Computing</h2>
-
-<p>
-Learn computer fundamentals,
-hardware, software and information systems.
-</p>
-
-<div class="course-meta">
-Level: 100L
-</div>
-
-<a href="quiz.html?course=CSC101"
-class="course-btn">
-Take Quiz
-</a>
-
-</div>
-
-</div>
-
-<div class="course-card">
-
-<div class="course-banner">
-<h3>CSC201</h3>
-</div>
-
-<div class="course-content">
-
-<h2>Data Structures</h2>
-
-<p>
-Arrays, linked lists,
-queues, stacks and trees.
-</p>
-
-<div class="course-meta">
-Level: 200L
-</div>
-
-<a href="quiz.html?course=CSC201"
-class="course-btn">
-Take Quiz
-</a>
-
-</div>
-
-</div>
-
-<div class="course-card">
-
-<div class="course-banner">
-<h3>CSC301</h3>
-</div>
-
-<div class="course-content">
-
-<h2>Database Systems</h2>
-
-<p>
-Database design,
-SQL and normalization.
-</p>
-
-<div class="course-meta">
-Level: 300L
-</div>
-
-<a href="quiz.html?course=CSC301"
-class="course-btn">
-Take Quiz
-</a>
-
-</div>
-
-</div>
-
-<div class="course-card locked">
-
-<div class="course-banner">
-<h3>CSC401</h3>
-</div>
-
-<div class="course-content">
-
-<h2>Artificial Intelligence</h2>
-
-<p>
-Unlock after earning 300 XP.
-</p>
-
-<div class="course-meta">
-Locked
-</div>
-
-<a href="#"
-class="course-btn">
-Locked
-</a>
-
-</div>
-
-</div>
+<div id="courseGrid" class="course-grid">
 
 </div>
 
@@ -223,5 +177,7 @@ Locked
 <script src="js/supabase.js"></script>
 
 <script src="js/navigation.js"></script>
+<script src="js/course-data.js"></script>
+<script src="js/courses.js"></script>
 </body>
 </html>

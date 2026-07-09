@@ -27,6 +27,30 @@ href="css/style.css">
     margin-bottom:20px;
 }
 
+.quiz-meta{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:center;
+    flex-wrap:wrap;
+    margin:16px 0 20px;
+}
+
+.timer-box,
+.progress-box{
+    background:#FAF8F2;
+    color:#234B3D;
+    border-radius:8px;
+    padding:10px 14px;
+    font-weight:bold;
+}
+
+.course-outline{
+    line-height:1.5;
+    margin-top:10px;
+    color:#555;
+}
+
 .option{
     background:#f4f4f4;
     padding:15px;
@@ -38,6 +62,11 @@ href="css/style.css">
 
 .option:hover{
     background:#e6f7ef;
+}
+
+.option.selected{
+    background:#bff0d2;
+    border:1px solid #3FAF7A;
 }
 
 .quiz-btn{
@@ -88,6 +117,13 @@ href="css/style.css">
 Quiz Arena
 </h1>
 
+<p id="courseOutline" class="course-outline"></p>
+
+<div class="quiz-meta">
+    <div class="progress-box" id="quizProgress">Question 1</div>
+    <div class="timer-box">Time Left: <span id="timer">00:00</span></div>
+</div>
+
 <div id="quizArea">
 
 <div id="question"
@@ -127,6 +163,7 @@ Back To Courses
 <script src="js/supabase.js"></script>
 
 <script src="js/navigation.js"></script>
+<script src="js/course-data.js"></script>
 <script src="js/quiz.js"></script>
 
 </body>
