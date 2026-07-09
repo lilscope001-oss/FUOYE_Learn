@@ -20,15 +20,9 @@
     width:100%;
 }
 
-.course-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:20px;
-}
-
 .course-tools{
     display:grid;
-    grid-template-columns:2fr 1fr 1fr auto;
+    grid-template-columns:1fr 1fr 2fr auto;
     gap:12px;
     align-items:center;
     margin:24px 0;
@@ -38,6 +32,25 @@
 .course-tools select{
     width:100%;
     padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:#fff;
+    color:#234B3D;
+}
+
+.course-select-row{
+    margin-bottom:20px;
+}
+
+.course-select-row label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.course-select-row select{
+    width:100%;
+    padding:14px;
     border:1px solid #ddd;
     border-radius:8px;
     background:#fff;
@@ -79,10 +92,6 @@
 .course-content h2{
     font-size:20px;
     margin-bottom:10px;
-}
-
-.course-content p{
-    line-height:1.5;
 }
 
 .course-meta{
@@ -147,12 +156,11 @@
 
 <h3>Department of Computer Science</h3>
 
-<p>Select a course and test your knowledge.</p>
+<p>Select a level, semester and course, then start the quiz.</p>
 
 </div>
 
 <div class="course-tools">
-    <input id="courseSearch" type="search" placeholder="Search course code, title, or topic">
     <select id="levelFilter">
         <option value="all">All levels</option>
         <option value="100L">100L</option>
@@ -165,10 +173,16 @@
         <option value="First Semester">First Semester</option>
         <option value="Second Semester">Second Semester</option>
     </select>
+    <input id="courseSearch" type="search" placeholder="Search course code or title">
     <span id="courseCount" class="course-count"></span>
 </div>
 
-<div id="courseGrid" class="course-grid">
+<div class="course-select-row">
+    <label for="courseSelect">Course</label>
+    <select id="courseSelect"></select>
+</div>
+
+<div id="courseDetails">
 
 </div>
 

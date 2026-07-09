@@ -7,6 +7,7 @@ let selectedAnswer = null;
 let quizFinished = false;
 let timerId = null;
 let remainingSeconds = 0;
+const PASS_MARK_PERCENT = 50;
 
 const params = new URLSearchParams(window.location.search);
 const courseCode = (params.get("course") || "CSC101").replace(/\s+/g, "").toUpperCase();
@@ -17,7 +18,6 @@ const optionsElement = document.getElementById("options");
 const nextBtn = document.getElementById("nextBtn");
 const timerElement = document.getElementById("timer");
 const progressElement = document.getElementById("quizProgress");
-const courseOutlineElement = document.getElementById("courseOutline");
 
 async function initQuiz() {
     currentUser = await getCurrentUser();
@@ -34,14 +34,17 @@ async function initQuiz() {
         return;
     }
 
+    if (!canTakeCourse(currentCourse.code)) {
+        const previousCourse = getPreviousCourse(currentCourse.code);
+        alert(`Please pass ${formatCourseCode(previousCourse.code)} before moving to this quiz.`);
+        window.location.href = `quiz.html?course=${previousCourse.code}`;
+        return;
+    }
+
     questions = generateQuizQuestions(currentCourse.code);
     remainingSeconds = calculateQuizDuration(questions.length);
 
     courseTitleElement.innerText = `${formatCourseCode(currentCourse.code)} Quiz`;
-
-    if (courseOutlineElement) {
-        courseOutlineElement.innerText = currentCourse.outline;
-    }
 
     loadQuestion();
     startTimer();
@@ -146,21 +149,103 @@ async function finishQuiz(timeExpired) {
     document.getElementById("quizArea").style.display = "none";
     document.getElementById("result").style.display = "block";
 
-    const xpEarned = score * 20;
+    const percentage = Math.round((score / questions.length) * 100);
+    const passed = percentage >= PASS_MARK_PERCENT;
+    const xpEarned = passed ? score * 20 : 0;
     const resultPrefix = timeExpired ? "Time is up. " : "";
 
     document.getElementById("scoreText").innerText =
-        `${resultPrefix}Score: ${score}/${questions.length}`;
+        `${resultPrefix}Score: ${score}/${questions.length} (${percentage}%)`;
 
     document.getElementById("xpText").innerText =
         `You earned ${xpEarned} XP`;
 
-    if (currentUser && !currentUser.profile_pending_sync) {
+    updateResultActions(passed);
+
+    if (passed) {
+        savePassedCourse(currentCourse.code);
+    }
+
+    if (passed && currentUser && !currentUser.profile_pending_sync) {
         currentUser.xp = (currentUser.xp || 0) + xpEarned;
         currentUser.badges = currentUser.badges || [];
 
         await updateAchievements();
         await updateUserDatabase(currentUser);
+    }
+}
+
+function updateResultActions(passed) {
+    const resultMessage = document.getElementById("resultMessage");
+    const resultActions = document.getElementById("resultActions");
+
+    if (!resultActions) return;
+
+    const nextCourse = getNextCourse(currentCourse.code);
+
+    if (!passed) {
+        if (resultMessage) {
+            resultMessage.innerText = `You need at least ${PASS_MARK_PERCENT}% to move to the next quiz. Retake this course quiz.`;
+        }
+
+        resultActions.innerHTML = `
+        <a href="quiz.html?course=${currentCourse.code}" class="course-btn">Retake Quiz</a>
+        `;
+        return;
+    }
+
+    if (resultMessage) {
+        resultMessage.innerText = "Great work. You passed this course quiz.";
+    }
+
+    resultActions.innerHTML = nextCourse
+        ? `<a href="quiz.html?course=${nextCourse.code}" class="course-btn">Go To Next Quiz</a>`
+        : `<a href="courses.html" class="course-btn">Back To Courses</a>`;
+}
+
+function getNextCourse(courseCode) {
+    const currentIndex = courseCatalog.findIndex(course => course.code === courseCode);
+
+    if (currentIndex === -1) return null;
+
+    return courseCatalog[currentIndex + 1] || null;
+}
+
+function getPreviousCourse(courseCode) {
+    const currentIndex = courseCatalog.findIndex(course => course.code === courseCode);
+
+    if (currentIndex <= 0) return null;
+
+    return courseCatalog[currentIndex - 1];
+}
+
+function canTakeCourse(courseCode) {
+    const previousCourse = getPreviousCourse(courseCode);
+
+    if (!previousCourse) return true;
+
+    return getPassedCourses().includes(previousCourse.code);
+}
+
+function savePassedCourse(courseCode) {
+    if (!currentUser?.id) return;
+
+    const key = `fuoye_passed_courses_${currentUser.id}`;
+    const passedCourses = getPassedCourses();
+
+    if (!passedCourses.includes(courseCode)) {
+        passedCourses.push(courseCode);
+        localStorage.setItem(key, JSON.stringify(passedCourses));
+    }
+}
+
+function getPassedCourses() {
+    if (!currentUser?.id) return [];
+
+    try {
+        return JSON.parse(localStorage.getItem(`fuoye_passed_courses_${currentUser.id}`)) || [];
+    } catch (error) {
+        return [];
     }
 }
 
