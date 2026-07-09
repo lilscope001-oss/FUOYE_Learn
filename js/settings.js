@@ -2,16 +2,17 @@ let currentUser = null;
 
 async function changeUsername() {
     const newName = document.getElementById('usernameInput').value.trim();
+    const message = document.getElementById('profileMessage');
 
     if (!newName) {
-        alert('Please enter a username');
+        if (message) message.innerText = 'Please enter a display name.';
         return;
     }
 
     currentUser.name = newName;
     await updateUser(currentUser.id, { name: currentUser.name });
 
-    alert('Username updated successfully');
+    if (message) message.innerText = 'Profile updated successfully.';
 }
 
 async function toggleDarkMode() {
@@ -19,6 +20,7 @@ async function toggleDarkMode() {
 
     const enabled = document.body.classList.contains('dark-mode');
     localStorage.setItem(getDarkModeKey(), enabled ? 'true' : 'false');
+    updateDarkModeButton(enabled);
 
     if (!currentUser) return;
 
@@ -27,9 +29,13 @@ async function toggleDarkMode() {
 }
 
 function applySavedDarkMode() {
-    if (currentUser?.dark_mode === true || localStorage.getItem(getDarkModeKey()) === 'true') {
+    const enabled = currentUser?.dark_mode === true || localStorage.getItem(getDarkModeKey()) === 'true';
+
+    if (enabled) {
         document.body.classList.add('dark-mode');
     }
+
+    updateDarkModeButton(enabled);
 }
 
 function getDarkModeKey() {
@@ -45,9 +51,26 @@ async function initSettings() {
     }
 
     applySavedDarkMode();
+    populateSettingsForm();
 }
 
 initSettings();
+
+function populateSettingsForm() {
+    const usernameInput = document.getElementById('usernameInput');
+
+    if (usernameInput) {
+        usernameInput.value = currentUser.name || '';
+    }
+}
+
+function updateDarkModeButton(enabled) {
+    const button = document.getElementById('darkModeBtn');
+
+    if (button) {
+        button.innerText = enabled ? 'Use Light Mode' : 'Use Dark Mode';
+    }
+}
 
 async function resetProgress() {
     const confirmReset = confirm('Reset all XP, badges and progress?');

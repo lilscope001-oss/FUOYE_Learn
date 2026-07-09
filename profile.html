@@ -60,6 +60,34 @@ border-radius:999px;
 font-weight:bold;
 }
 
+.profile-actions{
+display:flex;
+gap:10px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.edit-profile-btn{
+background:#234B3D;
+color:#ffffff;
+text-decoration:none;
+padding:10px 14px;
+border-radius:8px;
+font-weight:bold;
+transition:background .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+
+.edit-profile-btn:hover{
+background:#2F8E63;
+box-shadow:0 8px 18px rgba(35,75,61,.14);
+transform:translateY(-1px);
+}
+
+.edit-profile-btn:focus-visible{
+outline:3px solid rgba(63,175,122,.28);
+outline-offset:2px;
+}
+
 .profile-grid{
 display:grid;
 grid-template-columns:1.15fr .85fr;
@@ -207,7 +235,10 @@ cursor:pointer;
         <h1 id="name">Student</h1>
         <p id="email">student@example.com</p>
     </div>
-    <span id="accountStatus" class="status-pill">Active Student</span>
+    <div class="profile-actions">
+        <span id="accountStatus" class="status-pill">Active Student</span>
+        <a href="settings.html" class="edit-profile-btn">Edit Profile</a>
+    </div>
 </section>
 
 <section class="stat-grid">
