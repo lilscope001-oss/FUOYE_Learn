@@ -10,6 +10,8 @@ SUPABASE_URL,
 SUPABASE_KEY
 );
 
+var ADMIN_EMAIL = "lilscope001@gmail.com";
+
 async function getSessionUser() {
     const { data, error } = await supabaseClient.auth.getSession();
 
@@ -21,7 +23,11 @@ async function getSessionUser() {
 }
 
 function isAdminUser(user) {
-    return user?.app_metadata?.role === "admin" || user?.user_metadata?.role === "admin";
+    return (
+        user?.email?.toLowerCase() === ADMIN_EMAIL ||
+        user?.app_metadata?.role === "admin" ||
+        user?.user_metadata?.role === "admin"
+    );
 }
 
 async function isCurrentSessionAdmin() {
@@ -45,7 +51,9 @@ async function getCurrentUser() {
     }
 
     const createdUser = await createUserProfile(sessionUser);
-    return createdUser ? normalizeUser(createdUser, sessionUser) : null;
+    return createdUser
+        ? normalizeUser(createdUser, sessionUser)
+        : createFallbackUser(sessionUser);
 }
 
 async function fetchAllUsers() {
@@ -95,6 +103,24 @@ function normalizeUser(user, sessionUser = null) {
         streak: user.streak || 0,
         badges: user.badges || [],
         level: user.level || "100L",
+    };
+}
+
+function createFallbackUser(sessionUser) {
+    const metadata = sessionUser.user_metadata || {};
+    const pendingProfile = getPendingProfile(sessionUser.email);
+
+    return {
+        id: sessionUser.id,
+        name: pendingProfile.name || metadata.full_name || metadata.name || "Student",
+        matric: pendingProfile.matric || metadata.matric_number || metadata.matric || "",
+        email: sessionUser.email || "",
+        xp: 0,
+        streak: 0,
+        badges: [],
+        level: metadata.level || "100L",
+        activity_history: [],
+        profile_pending_sync: true,
     };
 }
 

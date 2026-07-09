@@ -233,6 +233,7 @@ async function saveActivity(text) {
 
 async function dailyReward() {
     if (!currentUser) return;
+    if (currentUser.profile_pending_sync) return;
 
     const today = new Date().toDateString();
     const rewardKey = `fuoye_last_reward_${currentUser.id}`;

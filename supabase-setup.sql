@@ -31,11 +31,20 @@ create policy "Admin update users"
 on public.users
 for update
 to authenticated
-using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
-with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+using (
+  (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+  or lower(auth.jwt() ->> 'email') = 'lilscope001@gmail.com'
+)
+with check (
+  (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+  or lower(auth.jwt() ->> 'email') = 'lilscope001@gmail.com'
+);
 
 create policy "Admin delete users"
 on public.users
 for delete
 to authenticated
-using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+using (
+  (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+  or lower(auth.jwt() ->> 'email') = 'lilscope001@gmail.com'
+);

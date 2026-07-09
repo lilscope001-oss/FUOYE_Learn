@@ -2,6 +2,7 @@ async function updateStreak() {
     const user = await getCurrentUser();
 
     if (!user) return;
+    if (user.profile_pending_sync) return;
 
     const today = new Date().toDateString();
     const visitKey = `fuoye_last_visit_${user.id}`;
