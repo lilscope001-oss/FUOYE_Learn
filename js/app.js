@@ -238,28 +238,6 @@ async function dailyReward() {
 }
 
 // =============================
-// Update User Database
-// =============================
-
-async function updateUserDatabase(updatedUser) {
-    if (!updatedUser?.id) return;
-
-    await updateUser(updatedUser.id, {
-        name: updatedUser.name,
-        email: updatedUser.email,
-        xp: updatedUser.xp,
-        streak: updatedUser.streak,
-        badges: updatedUser.badges,
-        level: updatedUser.level,
-        matric: updatedUser.matric,
-        activity_history: updatedUser.activity_history,
-        last_reward: updatedUser.last_reward,
-        last_visit: updatedUser.last_visit,
-        dark_mode: updatedUser.dark_mode,
-    });
-}
-
-// =============================
 // Logout
 // =============================
 

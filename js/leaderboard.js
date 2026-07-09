@@ -44,3 +44,7 @@ ${user.xp} XP
 `;
 
 });
+
+}
+
+initLeaderboard();

@@ -62,6 +62,26 @@ async function updateUser(userId, changes) {
     return { data, error };
 }
 
+async function updateUserDatabase(updatedUser) {
+    if (!updatedUser?.id) {
+        return { data: null, error: new Error("Missing user id.") };
+    }
+
+    return updateUser(updatedUser.id, {
+        name: updatedUser.name,
+        email: updatedUser.email,
+        xp: updatedUser.xp,
+        streak: updatedUser.streak,
+        badges: updatedUser.badges,
+        level: updatedUser.level,
+        matric: updatedUser.matric,
+        activity_history: updatedUser.activity_history,
+        last_reward: updatedUser.last_reward,
+        last_visit: updatedUser.last_visit,
+        dark_mode: updatedUser.dark_mode,
+    });
+}
+
 async function deleteUser(userId) {
     const { data, error } = await supabase
         .from("users")

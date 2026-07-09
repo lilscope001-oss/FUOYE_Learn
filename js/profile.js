@@ -1,26 +1,34 @@
-const { data,error } =
-await supabase.auth.signInWithPassword({
+let currentUser = null;
 
-email,
+async function initProfile() {
+    currentUser = await getCurrentUser();
 
-password
+    if (!currentUser) {
+        window.location.href = "login.html";
+        return;
+    }
 
-});
+    setProfileText("name", currentUser.name || "Student");
+    setProfileText("email", currentUser.email || "");
+    setProfileText("matric", currentUser.matric || "");
+    setProfileText("xp", currentUser.xp || 0);
+    setProfileText(
+        "badges",
+        currentUser.badges?.length ? currentUser.badges.join(", ") : "No badges yet"
+    );
+}
 
-await supabase
+function setProfileText(id, value) {
+    const element = document.getElementById(id);
 
-.from("users")
+    if (element) {
+        element.innerText = value;
+    }
+}
 
-.insert({
+async function logout() {
+    await signOutUser();
+    window.location.href = "login.html";
+}
 
-id:data.user.id,
-
-full_name:name,
-
-matric_number:matric,
-
-level:"100L",
-
-department:"Computer Science"
-
-});
+initProfile();
