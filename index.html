@@ -9,419 +9,431 @@
 
 <link rel="stylesheet" href="css/style.css">
 
+<style>
+
+.dashboard-shell{
+display:flex;
+min-height:100vh;
+}
+
+.dashboard-main{
+flex:1;
+padding:30px;
+}
+
+.dashboard-header{
+background:#ffffff;
+border:1px solid #e4eee8;
+border-radius:8px;
+box-shadow:0 4px 16px rgba(35,75,61,.08);
+padding:24px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:20px;
+flex-wrap:wrap;
+margin-bottom:22px;
+}
+
+.profile-box{
+background:#f5fbf7;
+border:1px solid #dcece3;
+border-radius:8px;
+padding:12px 16px;
+min-width:180px;
+color:#234B3D;
+text-decoration:none;
+transition:transform .18s ease,box-shadow .18s ease;
+}
+
+.profile-box:hover{
+box-shadow:0 8px 18px rgba(35,75,61,.12);
+transform:translateY(-1px);
+}
+
+.dashboard-hero{
+background:#ffffff;
+border:1px solid #e4eee8;
+border-top:4px solid #3FAF7A;
+border-radius:8px;
+box-shadow:0 4px 16px rgba(35,75,61,.08);
+padding:30px;
+display:grid;
+grid-template-columns:minmax(0,1fr) auto;
+gap:24px;
+align-items:center;
+margin-bottom:22px;
+}
+
+.dashboard-hero p{
+color:#60766d;
+line-height:1.6;
+max-width:680px;
+margin:10px 0 18px;
+}
+
+.hero-actions{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+}
+
+.secondary-btn{
+display:inline-block;
+background:#234B3D;
+color:#ffffff;
+text-decoration:none;
+padding:10px 15px;
+border-radius:8px;
+font-weight:bold;
+}
+
+.dashboard-mark{
+width:120px;
+height:120px;
+border-radius:50%;
+background:#edf6f1;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.dashboard-mark img{
+width:70px;
+height:70px;
+object-fit:contain;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+gap:18px;
+margin-bottom:22px;
+}
+
+.dashboard-card,
+.card{
+background:white;
+border:1px solid #e8f0eb;
+border-radius:8px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+.metric-card{
+padding:20px;
+}
+
+.metric-label{
+color:#6f8179;
+font-size:13px;
+font-weight:800;
+text-transform:uppercase;
+}
+
+.big-number{
+font-size:32px;
+font-weight:bold;
+color:#3FAF7A;
+margin-top:8px;
+}
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);
+gap:22px;
+align-items:start;
+}
+
+.dashboard-card{
+padding:22px;
+margin-bottom:22px;
+}
+
+.card-heading{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:14px;
+margin-bottom:16px;
+}
+
+.progress-track{
+width:100%;
+height:16px;
+background:#edf1ee;
+border-radius:20px;
+overflow:hidden;
+}
+
+#progressBar{
+width:0%;
+height:16px;
+background:#3FAF7A;
+transition:.5s;
+}
+
+#progressText{
+font-weight:800;
+color:#2F8E63;
+margin-top:12px;
+}
+
+.courses{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:16px;
+}
+
+.course-card{
+background:white;
+border:1px solid #e8f0eb;
+border-top:4px solid #3FAF7A;
+border-radius:8px;
+overflow:hidden;
+box-shadow:0 3px 10px rgba(0,0,0,.04);
+display:flex;
+flex-direction:column;
+}
+
+.course-top{
+background:#f5fbf7;
+color:#234B3D;
+padding:14px;
+font-weight:800;
+}
+
+.course-body{
+padding:16px;
+display:flex;
+flex-direction:column;
+gap:10px;
+flex:1;
+}
+
+.course-body p{
+color:#60766d;
+line-height:1.45;
+margin-bottom:auto;
+}
+
+.activity-list{
+list-style:none;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.activity-list li{
+background:#f8fbf9;
+border:1px solid #e8f0eb;
+border-radius:8px;
+padding:12px;
+color:#60766d;
+}
+
+.rank-item{
+background:#ffffff;
+border:1px solid #e8f0eb;
+padding:14px;
+border-radius:8px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+gap:12px;
+align-items:center;
+}
+
+.badge{
+background:#D9B650;
+padding:6px 10px;
+border-radius:8px;
+font-size:12px;
+font-weight:800;
+white-space:nowrap;
+}
+
+.footer{
+margin-top:30px;
+text-align:center;
+color:#667a72;
+}
+
+@media(max-width:980px){
+    .dashboard-shell{
+        display:block;
+    }
+
+    .sidebar{
+        width:100%;
+    }
+
+    .dashboard-grid,
+    .dashboard-hero{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-mark{
+        display:none;
+    }
+}
+
+@media(max-width:700px){
+    .dashboard-main{
+        padding:20px;
+    }
+
+    .hero-actions .course-btn,
+    .hero-actions .secondary-btn{
+        width:100%;
+        text-align:center;
+    }
+}
+
+</style>
+
 </head>
 
 <body>
 
-<div class="container">
-
-    <!-- Sidebar -->
+<div class="dashboard-shell">
 
     <aside class="sidebar">
-
         <div class="logo">
             <img src="assets/logos/FUOYE_LEARN_logo.png" alt="FUOYE Learn Logo">
         </div>
 
         <ul class="nav-links">
-
             <li><a href="index.html">Dashboard</a></li>
-
             <li><a href="courses.html">Courses</a></li>
-
             <li><a href="progress.html">Progress</a></li>
-
             <li><a href="achievements.html">Achievements</a></li>
-
             <li><a href="leaderboard.html">Leaderboard</a></li>
-
             <li><a href="profile.html">Profile</a></li>
-
             <li>
                 <a href="settings.html">
                     <img src="assets/icons/settings.svg" alt="" class="icon"> Settings
                 </a>
             </li>
-
             <li id="adminNavItem" style="display:none">
                 <a href="admin.html">
                     <img src="assets/icons/admin.svg" alt="" class="icon"> Admin Panel
                 </a>
             </li>
-
             <li>
-                <a href="javascript:void(0)"
-                onclick="logout()"
-                class="logout-link">
-                Logout
-                </a>
+                <a href="javascript:void(0)" onclick="logout()" class="logout-link">Logout</a>
             </li>
-
         </ul>
-
     </aside>
 
-    <!-- Main Content -->
-
-    <main class="main">
-
-        <!-- Header -->
-
-        <div class="header">
-
-            <h2 id="welcomeUser">
-                Welcome Back
-            </h2>
-
-            <div class="profile-box">
-
-                <strong id="profileName">
-                    Student
-                </strong>
-
-                <br>
-
-                <span id="profileXP">
-                    0 XP
-                </span>
-
+    <main class="dashboard-main">
+        <section class="dashboard-header">
+            <div>
+                <h2 id="welcomeUser">Welcome Back</h2>
+                <p>Keep learning, complete quizzes and build your XP.</p>
             </div>
-
-        </div>
-
-        <!-- Hero -->
-
-        <section class="hero">
-
-            <h1>Computer Science Learning Portal</h1>
-
-            <p>
-                Track your progress, earn XP,
-                unlock achievements and climb
-                the leaderboard.
-            </p>
-
+            <a href="profile.html" class="profile-box">
+                <strong id="profileName">Student</strong>
+                <br>
+                <span id="profileXP">0 XP</span>
+            </a>
         </section>
 
-        <!-- Dashboard Cards -->
+        <section class="dashboard-hero">
+            <div>
+                <h1>Computer Science Learning Portal</h1>
+                <p>Track your course progress, earn XP through timed quizzes, unlock achievements and compare your learning performance with other students.</p>
+                <div class="hero-actions">
+                    <a href="courses.html" class="course-btn">Start Learning</a>
+                    <a href="progress.html" class="secondary-btn">View Progress</a>
+                </div>
+            </div>
+            <div class="dashboard-mark">
+                <img src="assets/icons/graduation.svg" alt="">
+            </div>
+        </section>
 
         <section class="stats">
-
-            <div class="card">
-
-                <h3>Total XP</h3>
-
-                <div
-                class="big-number"
-                id="totalXP">
-
-                0
-
-                </div>
-
+            <div class="metric-card dashboard-card">
+                <div class="metric-label">Total XP</div>
+                <div class="big-number" id="totalXP">0</div>
             </div>
-
-            <div class="card">
-
-                <h3>Current Level</h3>
-
-                <div
-                class="big-number"
-                id="userLevel">
-
-                100L
-
-                </div>
-
+            <div class="metric-card dashboard-card">
+                <div class="metric-label">Current Level</div>
+                <div class="big-number" id="userLevel">100L</div>
             </div>
-
-            <div class="card">
-
-                <h3>Daily Streak</h3>
-
-                <div
-                class="big-number"
-                id="currentStreak">
-
-                0
-
-                </div>
-
+            <div class="metric-card dashboard-card">
+                <div class="metric-label">Daily Streak</div>
+                <div class="big-number" id="currentStreak">0</div>
             </div>
-
-            <div class="card">
-
-                <h3>Badges Earned</h3>
-
-                <div
-                class="big-number"
-                id="badgeCount">
-
-                0
-
-                </div>
-
+            <div class="metric-card dashboard-card">
+                <div class="metric-label">Badges Earned</div>
+                <div class="big-number" id="badgeCount">0</div>
             </div>
-
         </section>
 
-        <!-- Progress Card -->
+        <section class="dashboard-grid">
+            <div>
+                <section class="dashboard-card">
+                    <div class="card-heading">
+                        <h3>Learning Progress</h3>
+                        <a href="progress.html" class="course-btn">Details</a>
+                    </div>
+                    <div class="progress-track">
+                        <div id="progressBar"></div>
+                    </div>
+                    <p id="progressText">0%</p>
+                </section>
 
-        <div class="card">
-
-            <h3>Learning Progress</h3>
-
-            <br>
-
-            <div style="
-                width:100%;
-                height:20px;
-                background:#ddd;
-                border-radius:20px;
-                overflow:hidden;">
-
-                <div
-                id="progressBar"
-                style="
-                width:0%;
-                height:20px;
-                background:#3FAF7A;
-                transition:.5s;">
-
-                </div>
-
+                <section class="dashboard-card">
+                    <div class="card-heading">
+                        <h2>Featured Courses</h2>
+                        <a href="courses.html" class="course-btn">All Courses</a>
+                    </div>
+                    <div class="courses" id="dashboardCourses">
+                        <article class="course-card">
+                            <div class="course-top">CSC 101</div>
+                            <div class="course-body">
+                                <h3>Introduction To Computer Science I</h3>
+                                <p>Start with computer systems, data representation and problem solving.</p>
+                                <a href="quiz.html?course=CSC101" class="course-btn">Take Quiz</a>
+                            </div>
+                        </article>
+                    </div>
+                </section>
             </div>
 
-            <br>
+            <aside>
+                <section class="dashboard-card">
+                    <div class="card-heading">
+                        <h3>Recent Activities</h3>
+                    </div>
+                    <ul id="activityList" class="activity-list">
+                        <li>No activities yet.</li>
+                    </ul>
+                </section>
 
-            <p id="progressText">
-
-                0%
-
-            </p>
-
-        </div>
-
-        <!-- Courses -->
-
-        <h2 class="section-title">
-
-            Popular Courses
-
-        </h2>
-
-        <section class="courses">
-
-            <div class="course-card">
-
-                <div class="course-top">
-
-                    CSC101
-
-                </div>
-
-                <div class="course-body">
-
-                    <h3>
-
-                        Introduction To Computing
-
-                    </h3>
-
-                    <p>
-
-                        Learn computer systems,
-                        software and hardware.
-
-                    </p>
-
-                    <a
-                    href="quiz.html?course=CSC101"
-                    class="course-btn">
-
-                    Start Course
-
-                    </a>
-
-                </div>
-
-            </div>
-
-            <div class="course-card">
-
-                <div class="course-top">
-
-                    CSC201
-
-                </div>
-
-                <div class="course-body">
-
-                    <h3>
-
-                        Data Structures
-
-                    </h3>
-
-                    <p>
-
-                        Arrays, Queues,
-                        Stacks and Trees.
-
-                    </p>
-
-                    <a
-                    href="quiz.html?course=CSC201"
-                    class="course-btn">
-
-                    Continue
-
-                    </a>
-
-                </div>
-
-            </div>
-
-            <div class="course-card">
-
-                <div class="course-top">
-
-                    CSC301
-
-                </div>
-
-                <div class="course-body">
-
-                    <h3>
-
-                        Database Systems
-
-                    </h3>
-
-                    <p>
-
-                        SQL,
-                        Database Design
-                        and Normalization.
-
-                    </p>
-
-                    <a
-                    href="quiz.html?course=CSC301"
-                    class="course-btn">
-
-                    Continue
-
-                    </a>
-
-                </div>
-
-            </div>
-
+                <section class="dashboard-card">
+                    <div class="card-heading">
+                        <h2>Top Students</h2>
+                        <a href="leaderboard.html" class="course-btn">View</a>
+                    </div>
+                    <div id="leaderboardPreview">
+                        <div class="rank-item">
+                            <span>No leaderboard data yet.</span>
+                            <span class="badge">0 XP</span>
+                        </div>
+                    </div>
+                </section>
+            </aside>
         </section>
 
-        <!-- Activity -->
-
-        <div class="card">
-
-            <h3>
-
-                Recent Activities
-
-            </h3>
-
-            <br>
-
-            <ul id="activityList">
-
-                <li>
-
-                    No activities yet.
-
-                </li>
-
-            </ul>
-
-        </div>
-
-        <!-- Leaderboard Preview -->
-
-        <div class="leaderboard">
-
-            <h2 class="section-title">
-
-                Top Students
-
-            </h2>
-
-            <div class="rank-item">
-
-                <span>
-
-                    <img src="assets/icons/award-gold.svg" alt="" class="icon-rank"> David
-
-                </span>
-
-                <span class="badge">
-
-                    1500 XP
-
-                </span>
-
-            </div>
-
-            <div class="rank-item">
-
-                <span>
-
-                    <img src="assets/icons/award-silver.svg" alt="" class="icon-rank"> Sarah
-
-                </span>
-
-                <span class="badge">
-
-                    1450 XP
-
-                </span>
-
-            </div>
-
-            <div class="rank-item">
-
-                <span>
-
-                    <img src="assets/icons/award-bronze.svg" alt="" class="icon-rank"> John
-
-                </span>
-
-                <span class="badge">
-
-                    1320 XP
-
-                </span>
-
-            </div>
-
-        </div>
-
-        <!-- Footer -->
-
-        <div class="footer">
-
-            FUOYE Learn © 2026
-
-        </div>
-
+        <div class="footer">FUOYE Learn 2026</div>
     </main>
 
 </div>
 
-<!-- JavaScript -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="js/supabase.js"></script>
-
 <script src="js/navigation.js"></script>
 
 <script>
@@ -429,7 +441,6 @@
         try {
             const sessionUser = await getSessionUser();
             if (!sessionUser) {
-                // Not signed in -> send to login page
                 window.location.href = 'login.html';
             }
         } catch (e) {
@@ -439,9 +450,8 @@
 </script>
 
 <script src="js/auth.js"></script>
-
 <script src="js/streak.js"></script>
-
+<script src="js/course-data.js"></script>
 <script src="js/app.js"></script>
 
 </body>

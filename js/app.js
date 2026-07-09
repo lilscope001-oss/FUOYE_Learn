@@ -20,6 +20,8 @@ async function initApp() {
     await updateAdminNav();
     calculateProgress();
     loadActivity();
+    renderDashboardCourses();
+    await loadLeaderboardPreview();
 }
 
 // =============================
@@ -209,9 +211,57 @@ function loadActivity() {
         .reverse()
         .forEach(item => {
             activity.innerHTML += `
-            <li>${item}</li>
+            <li>${escapeHtml(item)}</li>
             `;
         });
+}
+
+function renderDashboardCourses() {
+    const container = document.getElementById("dashboardCourses");
+
+    if (!container || typeof courseCatalog === "undefined" || !Array.isArray(courseCatalog)) return;
+
+    const featuredCourses = courseCatalog.slice(0, 3);
+
+    container.innerHTML = featuredCourses.map(course => `
+        <article class="course-card">
+            <div class="course-top">${formatCourseCode(course.code)}</div>
+            <div class="course-body">
+                <h3>${escapeHtml(course.title)}</h3>
+                <p>${escapeHtml(course.level)} - ${escapeHtml(course.semester)} timed quiz practice.</p>
+                <a href="quiz.html?course=${course.code}" class="course-btn">Take Quiz</a>
+            </div>
+        </article>
+    `).join("");
+}
+
+async function loadLeaderboardPreview() {
+    const container = document.getElementById("leaderboardPreview");
+
+    if (!container) return;
+
+    const users = await fetchAllUsers();
+    const topUsers = users
+        .filter(Boolean)
+        .sort((a, b) => (b.xp || 0) - (a.xp || 0))
+        .slice(0, 3);
+
+    if (topUsers.length === 0) {
+        container.innerHTML = `
+            <div class="rank-item">
+                <span>No leaderboard data yet.</span>
+                <span class="badge">0 XP</span>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = topUsers.map((user, index) => `
+        <div class="rank-item">
+            <span>${getRankIcon(index)} ${escapeHtml(user.name || "Student")}</span>
+            <span class="badge">${user.xp || 0} XP</span>
+        </div>
+    `).join("");
 }
 
 // =============================
@@ -277,6 +327,26 @@ function isCourseUnlocked(
         (currentUser.xp || 0) >= requiredXP
     );
 
+}
+
+function getRankIcon(index) {
+    if (index === 0) return '<img src="assets/icons/award-gold.svg" alt="" class="icon-rank">';
+    if (index === 1) return '<img src="assets/icons/award-silver.svg" alt="" class="icon-rank">';
+    if (index === 2) return '<img src="assets/icons/award-bronze.svg" alt="" class="icon-rank">';
+    return "";
+}
+
+function formatCourseCode(code) {
+    return String(code || "").replace(/([A-Z]+)(\d+)/, "$1 $2");
+}
+
+function escapeHtml(value) {
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 // =============================

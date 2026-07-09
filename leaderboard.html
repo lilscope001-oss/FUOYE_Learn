@@ -12,37 +12,232 @@
 <style>
 
 .leaderboard-container{
-max-width:900px;
+max-width:1120px;
 margin:40px auto;
 padding:20px;
 }
 
+.leaderboard-hero{
+background:#ffffff;
+border:1px solid #e4eee8;
+border-radius:8px;
+box-shadow:0 4px 16px rgba(35,75,61,.08);
+padding:28px;
+display:flex;
+justify-content:space-between;
+align-items:flex-end;
+gap:24px;
+flex-wrap:wrap;
+margin-bottom:22px;
+}
+
 .leaderboard-title{
-text-align:center;
-margin-bottom:30px;
+margin-bottom:8px;
+}
+
+.leaderboard-subtitle{
+color:#60766d;
+line-height:1.5;
+max-width:600px;
+}
+
+.leaderboard-stats{
+display:grid;
+grid-template-columns:repeat(3,minmax(120px,1fr));
+gap:14px;
+margin-bottom:22px;
+}
+
+.leaderboard-stat{
+background:#ffffff;
+border:1px solid #e8f0eb;
+border-radius:8px;
+padding:18px;
+box-shadow:0 3px 10px rgba(0,0,0,.04);
+}
+
+.leaderboard-stat span{
+display:block;
+color:#6f8179;
+font-size:13px;
+font-weight:700;
+text-transform:uppercase;
+}
+
+.leaderboard-stat strong{
+display:block;
+font-size:28px;
+margin-top:6px;
+color:#234B3D;
+}
+
+.podium-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:16px;
+margin-bottom:24px;
+}
+
+.podium-card{
+background:#ffffff;
+border:1px solid #e8f0eb;
+border-top:4px solid #3FAF7A;
+border-radius:8px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+padding:22px;
+min-height:170px;
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.podium-card.first{
+border-top-color:#D9B650;
+transform:translateY(-8px);
+}
+
+.podium-rank{
+display:flex;
+align-items:center;
+gap:8px;
+font-weight:800;
+color:#2F8E63;
+}
+
+.podium-name{
+font-size:20px;
+font-weight:800;
+line-height:1.25;
+}
+
+.podium-meta{
+color:#6f8179;
+font-size:14px;
+}
+
+.leaderboard-panel{
+background:#ffffff;
+border:1px solid #e8f0eb;
+border-radius:8px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+overflow:hidden;
+}
+
+.leaderboard-panel-header,
+.player{
+display:grid;
+grid-template-columns:90px minmax(0,1fr) 130px 120px;
+align-items:center;
+gap:16px;
+padding:16px 20px;
+}
+
+.leaderboard-panel-header{
+background:#f5fbf7;
+color:#5f766d;
+font-size:13px;
+font-weight:800;
+text-transform:uppercase;
 }
 
 .player{
-background:white;
-padding:18px;
-border-radius:12px;
-margin-bottom:12px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 3px 10px rgba(0,0,0,.05);
+border-top:1px solid #eef3f0;
+}
+
+.player.current-user{
+background:#effaf4;
+box-shadow:inset 4px 0 0 #3FAF7A;
 }
 
 .rank{
-font-size:20px;
+display:flex;
+align-items:center;
+gap:8px;
+font-size:18px;
 font-weight:bold;
+}
+
+.student-cell{
+display:flex;
+align-items:center;
+gap:12px;
+min-width:0;
+}
+
+.student-avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+background:#234B3D;
+color:#ffffff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+flex:0 0 42px;
+}
+
+.student-name{
+font-weight:800;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.student-meta{
+color:#6f8179;
+font-size:13px;
+margin-top:3px;
 }
 
 .xp{
 background:#D9B650;
 padding:8px 12px;
-border-radius:20px;
+border-radius:8px;
 font-weight:bold;
+text-align:center;
+justify-self:start;
+}
+
+.level-pill{
+background:#edf6f1;
+color:#2F8E63;
+padding:8px 12px;
+border-radius:8px;
+font-weight:800;
+text-align:center;
+justify-self:start;
+}
+
+.leaderboard-empty{
+padding:42px 20px;
+text-align:center;
+color:#60766d;
+}
+
+@media(max-width:850px){
+    .leaderboard-stats,
+    .podium-grid{
+        grid-template-columns:1fr;
+    }
+
+    .podium-card.first{
+        transform:none;
+    }
+
+    .leaderboard-panel-header{
+        display:none;
+    }
+
+    .player{
+        grid-template-columns:1fr;
+        align-items:flex-start;
+    }
+
+    .xp,
+    .level-pill{
+        justify-self:stretch;
+    }
 }
 
 </style>
@@ -52,7 +247,7 @@ font-weight:bold;
 <body>
 
 <header class="top-nav">
-    <a href="index.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <a href="index.html" onclick="goBack(event)" class="back-link">Back To Dashboard</a>
     <ul class="nav-links-inline">
         <li><a href="index.html">Dashboard</a></li>
         <li><a href="courses.html">Courses</a></li>
@@ -68,20 +263,51 @@ font-weight:bold;
     </ul>
 </header>
 
-<div class="leaderboard-container">
+<main class="leaderboard-container">
 
-<h1 class="leaderboard-title">
-<img src="assets/icons/trophy.svg" alt="" class="icon-title">Student Leaderboard
-</h1>
+<section class="leaderboard-hero">
+    <div>
+        <h1 class="leaderboard-title">
+            <img src="assets/icons/trophy.svg" alt="" class="icon-title">Student Leaderboard
+        </h1>
+        <p class="leaderboard-subtitle">Track the top learners by XP and see how your progress compares with other FUOYE Learn students.</p>
+    </div>
+    <a href="courses.html" class="course-btn">Continue Learning</a>
+</section>
 
-<div id="leaderboardList"></div>
+<section class="leaderboard-stats">
+    <div class="leaderboard-stat">
+        <span>Students</span>
+        <strong id="totalStudents">0</strong>
+    </div>
+    <div class="leaderboard-stat">
+        <span>Top XP</span>
+        <strong id="topXp">0</strong>
+    </div>
+    <div class="leaderboard-stat">
+        <span>Your Rank</span>
+        <strong id="yourRank">--</strong>
+    </div>
+</section>
 
-</div>
+<section id="podiumList" class="podium-grid"></section>
+
+<section class="leaderboard-panel">
+    <div class="leaderboard-panel-header">
+        <span>Rank</span>
+        <span>Student</span>
+        <span>Level</span>
+        <span>XP</span>
+    </div>
+    <div id="leaderboardList">
+        <div class="leaderboard-empty">Loading leaderboard...</div>
+    </div>
+</section>
+
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script src="js/supabase.js"></script>
-
 <script src="js/navigation.js"></script>
 <script src="js/leaderboard.js"></script>
 
