@@ -33,9 +33,14 @@ body{
 }
 
 .logo{
-    font-size:24px;
-    font-weight:bold;
     margin-bottom:40px;
+}
+
+.logo img{
+    display:block;
+    width:100%;
+    max-width:190px;
+    height:auto;
 }
 
 .nav-links{
