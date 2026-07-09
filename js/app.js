@@ -52,7 +52,7 @@ function updateDashboard() {
 
     if (welcome) {
         welcome.innerText =
-            `Welcome Back, ${user.name} 👋`;
+            `Welcome Back, ${user.name}`;
     }
 
     // XP
@@ -234,7 +234,7 @@ async function dailyReward() {
     currentUser.last_reward = today;
 
     await updateUserDatabase(currentUser);
-    await saveActivity("🎁 Daily login reward (+10 XP)");
+    await saveActivity("Daily login reward (+10 XP)");
 }
 
 // =============================

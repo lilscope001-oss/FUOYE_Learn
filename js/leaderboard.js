@@ -13,13 +13,13 @@ document.getElementById(
 let medal = "";
 
 if(index === 0)
-medal = "🥇";
+medal = `<img src="assets/icons/award-gold.svg" alt="" class="icon-rank">`;
 
 else if(index === 1)
-medal = "🥈";
+medal = `<img src="assets/icons/award-silver.svg" alt="" class="icon-rank">`;
 
 else if(index === 2)
-medal = "🥉";
+medal = `<img src="assets/icons/award-bronze.svg" alt="" class="icon-rank">`;
 
 container.innerHTML += `
 

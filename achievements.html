@@ -60,7 +60,7 @@ opacity:.5;
         <li><a href="profile.html">Profile</a></li>
         <li>
             <a href="settings.html">
-                ⚙️ Settings
+                <img src="assets/icons/settings.svg" alt="" class="icon"> Settings
             </a>
         </li>
         <li><a href="javascript:void(0)" onclick="logout()" class="logout-link">Logout</a></li>
@@ -96,10 +96,10 @@ async function initAchievements() {
     }
 
     const badges = [
-        { name: "Beginner", xp: 100, icon: "🌱" },
-        { name: "Scholar", xp: 300, icon: "📚" },
-        { name: "Master Learner", xp: 500, icon: "🎓" },
-        { name: "Professor", xp: 1000, icon: "👑" }
+        { name: "Beginner", xp: 100, icon: "assets/icons/sprout.svg" },
+        { name: "Scholar", xp: 300, icon: "assets/icons/book.svg" },
+        { name: "Master Learner", xp: 500, icon: "assets/icons/graduation.svg" },
+        { name: "Professor", xp: 1000, icon: "assets/icons/crown.svg" }
     ];
 
     const container = document.getElementById("badgesContainer");
@@ -109,7 +109,7 @@ async function initAchievements() {
 
         container.innerHTML += `
         <div class="badge-card ${unlocked ? 'unlocked' : 'locked'}">
-            <div class="badge-icon">${badge.icon}</div>
+            <img class="badge-icon-img" src="${badge.icon}" alt="">
             <h3>${badge.name}</h3>
             <p>Unlock at ${badge.xp} XP</p>
         </div>
