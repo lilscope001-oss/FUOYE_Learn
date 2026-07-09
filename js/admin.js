@@ -1,8 +1,25 @@
 let users = [];
 
 const table = document.getElementById("userTable");
+const adminMessage = document.getElementById("adminMessage");
+const adminContent = document.getElementById("adminContent");
 
 async function initAdmin() {
+    const sessionUser = await getSessionUser();
+
+    if (!sessionUser) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    if (!isAdminUser(sessionUser)) {
+        if (adminContent) adminContent.style.display = "none";
+        if (adminMessage) {
+            adminMessage.innerText = "You do not have permission to view this page.";
+        }
+        return;
+    }
+
     users = await fetchAllUsers();
     renderUsers();
 }

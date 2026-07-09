@@ -26,9 +26,19 @@ async function handleSignup(event) {
         return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    savePendingProfile(email, { name, matric });
+
+    const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
+        options: {
+            data: {
+                full_name: name,
+                matric_number: matric,
+                level: "100L",
+                department: "Computer Science",
+            },
+        },
     });
 
     if (error) {
@@ -36,25 +46,27 @@ async function handleSignup(event) {
         return;
     }
 
-    const userRecord = {
-        id: data.user?.id,
-        name,
-        matric,
-        email,
-        xp: 0,
-        streak: 0,
-        badges: [],
-        level: "100L",
-        created_at: new Date().toISOString(),
-    };
+    if (data.session && data.user) {
+        const { error: insertError } = await insertUser({
+            id: data.user.id,
+            name,
+            matric,
+            level: "100L",
+            department: "Computer Science",
+            xp: 0,
+            streak: 0,
+            badges: [],
+        });
 
-    const { error: insertError } = await insertUser(userRecord);
+        if (insertError) {
+            showError(signupError, insertError.message || "Could not create user record.");
+            return;
+        }
 
-    if (insertError) {
-        showError(signupError, insertError.message || "Could not create user record.");
-        return;
+        clearPendingProfile(email);
     }
 
+    alert("Account created. Please check your email to confirm your account before logging in.");
     window.location.href = "login.html";
 }
 
@@ -71,7 +83,7 @@ async function handleLogin(event) {
         return;
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabaseClient.auth.signInWithPassword({
         email,
         password,
     });

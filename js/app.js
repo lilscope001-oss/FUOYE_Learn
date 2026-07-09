@@ -17,6 +17,7 @@ async function initApp() {
 
     await dailyReward();
     updateDashboard();
+    await updateAdminNav();
     calculateProgress();
     loadActivity();
 }
@@ -135,6 +136,14 @@ function calculateLevel(xp) {
     return "100L";
 }
 
+async function updateAdminNav() {
+    const adminNavItem = document.getElementById("adminNavItem");
+
+    if (!adminNavItem) return;
+
+    adminNavItem.style.display = await isCurrentSessionAdmin() ? "block" : "none";
+}
+
 // =============================
 // Progress Percentage
 // =============================
@@ -226,12 +235,14 @@ async function dailyReward() {
     if (!currentUser) return;
 
     const today = new Date().toDateString();
-    const lastReward = currentUser.last_reward;
+    const rewardKey = `fuoye_last_reward_${currentUser.id}`;
+    const lastReward = currentUser.last_reward || localStorage.getItem(rewardKey);
 
     if (today === lastReward) return;
 
     currentUser.xp = (currentUser.xp || 0) + 10;
     currentUser.last_reward = today;
+    localStorage.setItem(rewardKey, today);
 
     await updateUserDatabase(currentUser);
     await saveActivity("Daily login reward (+10 XP)");

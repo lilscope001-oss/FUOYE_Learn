@@ -18,6 +18,7 @@ async function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
 
     const enabled = document.body.classList.contains('dark-mode');
+    localStorage.setItem(getDarkModeKey(), enabled ? 'true' : 'false');
 
     if (!currentUser) return;
 
@@ -26,9 +27,13 @@ async function toggleDarkMode() {
 }
 
 function applySavedDarkMode() {
-    if (currentUser?.dark_mode === true) {
+    if (currentUser?.dark_mode === true || localStorage.getItem(getDarkModeKey()) === 'true') {
         document.body.classList.add('dark-mode');
     }
+}
+
+function getDarkModeKey() {
+    return currentUser?.id ? `fuoye_dark_mode_${currentUser.id}` : 'fuoye_dark_mode';
 }
 
 async function initSettings() {
