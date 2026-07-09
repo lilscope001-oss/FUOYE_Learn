@@ -1,14 +1,21 @@
+const INITIAL_COURSE_LIMIT = 12;
+
+const courseGrid = document.getElementById("courseGrid");
 const courseDetails = document.getElementById("courseDetails");
 const courseCount = document.getElementById("courseCount");
 const levelFilter = document.getElementById("levelFilter");
 const semesterFilter = document.getElementById("semesterFilter");
 const searchInput = document.getElementById("courseSearch");
 const courseSelect = document.getElementById("courseSelect");
+const moreCoursesBtn = document.getElementById("moreCoursesBtn");
+
+let showAllCourses = false;
 
 if (levelFilter) levelFilter.addEventListener("change", updateCourseOptions);
 if (semesterFilter) semesterFilter.addEventListener("change", updateCourseOptions);
 if (searchInput) searchInput.addEventListener("input", updateCourseOptions);
 if (courseSelect) courseSelect.addEventListener("change", renderSelectedCourse);
+if (moreCoursesBtn) moreCoursesBtn.addEventListener("click", toggleMoreCourses);
 
 function getFilteredCourses() {
     const selectedLevel = levelFilter?.value || "all";
@@ -28,6 +35,7 @@ function getFilteredCourses() {
 function updateCourseOptions() {
     if (!courseSelect) return;
 
+    showAllCourses = false;
     const filteredCourses = getFilteredCourses();
     courseSelect.innerHTML = "";
 
@@ -42,7 +50,38 @@ function updateCourseOptions() {
         courseCount.innerText = `${filteredCourses.length} courses`;
     }
 
+    renderCourseGrid(filteredCourses);
     renderSelectedCourse();
+}
+
+function renderCourseGrid(courses) {
+    if (!courseGrid) return;
+
+    const visibleCourses = showAllCourses
+        ? courses
+        : courses.slice(0, INITIAL_COURSE_LIMIT);
+
+    courseGrid.innerHTML = "";
+
+    visibleCourses.forEach(course => {
+        courseGrid.innerHTML += createCourseCard(course);
+    });
+
+    if (courses.length === 0) {
+        courseGrid.innerHTML = `<div class="card">No courses match your selection.</div>`;
+    }
+
+    if (moreCoursesBtn) {
+        moreCoursesBtn.style.display = courses.length > INITIAL_COURSE_LIMIT ? "block" : "none";
+        moreCoursesBtn.innerText = showAllCourses
+            ? "Show Fewer Courses"
+            : `More Courses (${courses.length - INITIAL_COURSE_LIMIT})`;
+    }
+}
+
+function toggleMoreCourses() {
+    showAllCourses = !showAllCourses;
+    renderCourseGrid(getFilteredCourses());
 }
 
 function renderSelectedCourse() {
@@ -56,15 +95,22 @@ function renderSelectedCourse() {
     }
 
     courseDetails.innerHTML = `
+    <h2 class="section-title">Selected Course</h2>
+    ${createCourseCard(selectedCourse)}
+    `;
+}
+
+function createCourseCard(course) {
+    return `
     <article class="course-card">
         <div class="course-banner">
-            <h3>${formatCourseCode(selectedCourse.code)}</h3>
-            <span>${selectedCourse.level} - ${selectedCourse.semester}</span>
+            <h3>${formatCourseCode(course.code)}</h3>
+            <span>${course.level} - ${course.semester}</span>
         </div>
         <div class="course-content">
-            <h2>${selectedCourse.title}</h2>
-            <div class="course-meta">${generateQuizQuestions(selectedCourse.code).length} timed quiz questions</div>
-            <a href="quiz.html?course=${selectedCourse.code}" class="course-btn">Take Quiz</a>
+            <h2>${course.title}</h2>
+            <div class="course-meta">${generateQuizQuestions(course.code).length} timed quiz questions</div>
+            <a href="quiz.html?course=${course.code}" class="course-btn">Take Quiz</a>
         </div>
     </article>
     `;

@@ -63,6 +63,13 @@
     white-space:nowrap;
 }
 
+.course-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+    margin-bottom:20px;
+}
+
 .course-card{
     background:white;
     border-radius:15px;
@@ -107,6 +114,18 @@
     padding:10px 15px;
     border-radius:8px;
     font-weight:bold;
+}
+
+.more-course-btn{
+    display:block;
+    margin:0 auto 24px;
+    background:#234B3D;
+    color:#fff;
+    border:none;
+    padding:12px 18px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
 .locked{
@@ -181,6 +200,12 @@
     <label for="courseSelect">Course</label>
     <select id="courseSelect"></select>
 </div>
+
+<div id="courseGrid" class="course-grid"></div>
+
+<button id="moreCoursesBtn" class="more-course-btn" type="button">
+    More Courses
+</button>
 
 <div id="courseDetails">
 
