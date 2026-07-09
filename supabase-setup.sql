@@ -1,6 +1,9 @@
 -- FUOYE Learn Supabase setup
 -- Run this in Supabase SQL Editor before production use.
 
+alter table public.users
+add column if not exists dark_mode boolean default false;
+
 alter table public.users enable row level security;
 
 drop policy if exists "Read leaderboard" on public.users;

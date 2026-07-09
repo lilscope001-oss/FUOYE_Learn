@@ -16,30 +16,26 @@ async function changeUsername() {
 }
 
 async function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
+    const enabled = !document.body.classList.contains('dark-mode');
 
-    const enabled = document.body.classList.contains('dark-mode');
-    localStorage.setItem(getDarkModeKey(), enabled ? 'true' : 'false');
+    saveThemePreference(currentUser?.id, enabled);
     updateDarkModeButton(enabled);
 
     if (!currentUser) return;
 
     currentUser.dark_mode = enabled;
-    await updateUser(currentUser.id, { dark_mode: currentUser.dark_mode });
+    const { error } = await updateUser(currentUser.id, { dark_mode: currentUser.dark_mode });
+
+    if (error) {
+        console.warn('Dark mode was saved locally but not synced to Supabase.', error);
+    }
 }
 
 function applySavedDarkMode() {
-    const enabled = currentUser?.dark_mode === true || localStorage.getItem(getDarkModeKey()) === 'true';
-
-    if (enabled) {
-        document.body.classList.add('dark-mode');
-    }
+    applyUserTheme(currentUser);
+    const enabled = document.body.classList.contains('dark-mode');
 
     updateDarkModeButton(enabled);
-}
-
-function getDarkModeKey() {
-    return currentUser?.id ? `fuoye_dark_mode_${currentUser.id}` : 'fuoye_dark_mode';
 }
 
 async function initSettings() {

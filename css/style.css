@@ -13,6 +13,10 @@
     --white:#ffffff;
     --text:#234B3D;
     --gray:#f1f1f1;
+    --muted:#60766d;
+    --panel:#ffffff;
+    --line:#e4eee8;
+    --soft:#f5fbf7;
 }
 
 body{
@@ -27,14 +31,20 @@ body{
 
 .sidebar{
     width:260px;
-    background:#ffffff;
+    background:linear-gradient(180deg,#ffffff 0%,#f7fcf9 100%);
     color:var(--text);
-    padding:25px;
-    box-shadow:2px 0 16px rgba(35,75,61,.08);
+    padding:24px 18px;
+    border-right:1px solid var(--line);
+    box-shadow:2px 0 18px rgba(35,75,61,.08);
+    position:sticky;
+    top:0;
+    min-height:100vh;
 }
 
 .logo{
-    margin-bottom:40px;
+    margin-bottom:26px;
+    padding:10px 10px 18px;
+    border-bottom:1px solid var(--line);
 }
 
 .logo img{
@@ -49,7 +59,7 @@ body{
 }
 
 .nav-links li{
-    margin-bottom:15px;
+    margin-bottom:10px;
 }
 
 .nav-links a{
@@ -58,14 +68,21 @@ body{
     display:flex;
     align-items:center;
     gap:8px;
-    padding:12px;
+    padding:12px 14px;
     border-radius:8px;
-    transition:.3s;
+    border:1px solid var(--line);
+    background:#ffffff;
+    font-weight:700;
+    transition:background .2s ease,color .2s ease,border-color .2s ease,transform .18s ease,box-shadow .18s ease;
 }
 
-.nav-links a:hover{
-    background:rgba(63,175,122,.12);
+.nav-links a:hover,
+.nav-links a.active{
+    background:var(--soft);
+    border-color:rgba(63,175,122,.45);
     color:var(--primary-dark);
+    box-shadow:0 8px 18px rgba(35,75,61,.08);
+    transform:translateX(3px);
 }
 
 .top-nav{
@@ -122,6 +139,7 @@ body{
 .nav-links a.logout-link:hover,
 .nav-links-inline a.logout-link:hover{
     background:rgba(217,83,79,.1);
+    border-color:rgba(217,83,79,.28);
     color:#d9534f;
 }
 
@@ -303,10 +321,82 @@ body{
 
     .sidebar{
         width:100%;
+        min-height:auto;
+        position:relative;
     }
 
     .header{
         flex-direction:column;
         gap:15px;
     }
+}
+
+body.dark-mode,
+html.dark-mode body{
+    --bg:#101714;
+    --white:#17211d;
+    --text:#e9f4ee;
+    --muted:#b7c7bf;
+    --panel:#17211d;
+    --line:#284139;
+    --soft:#20342d;
+    background:var(--bg);
+    color:var(--text);
+}
+
+body.dark-mode .sidebar,
+body.dark-mode .top-nav,
+body.dark-mode .card,
+body.dark-mode .dashboard-card,
+body.dark-mode .dashboard-header,
+body.dark-mode .dashboard-hero,
+body.dark-mode .profile-box,
+body.dark-mode .course-card,
+body.dark-mode .rank-item,
+body.dark-mode .leaderboard-panel,
+body.dark-mode .leaderboard-hero,
+body.dark-mode .leaderboard-stat,
+body.dark-mode .settings-card,
+body.dark-mode .settings-header,
+body.dark-mode .achievement-hero,
+body.dark-mode .achievement-stat,
+body.dark-mode .badge-card,
+body.dark-mode .page-header,
+body.dark-mode .course-tools-card,
+body.dark-mode .progress-hero,
+body.dark-mode .progress-card,
+body.dark-mode .stat-box,
+body.dark-mode .course-item{
+    background:var(--panel);
+    border-color:var(--line);
+    color:var(--text);
+}
+
+body.dark-mode .nav-links a,
+body.dark-mode .nav-links-inline a{
+    background:#17211d;
+    border-color:var(--line);
+    color:var(--text);
+}
+
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active,
+body.dark-mode .nav-links-inline a:hover,
+body.dark-mode .nav-links-inline a.active{
+    background:#20342d;
+    color:#8ee0b5;
+}
+
+body.dark-mode p,
+body.dark-mode .dashboard-hero p,
+body.dark-mode .course-body p,
+body.dark-mode .activity-list li,
+body.dark-mode .metric-label,
+body.dark-mode .leaderboard-subtitle,
+body.dark-mode .student-meta,
+body.dark-mode .course-meta,
+body.dark-mode .achievement-hero p,
+body.dark-mode .badge-card p,
+body.dark-mode .progress-hero p{
+    color:var(--muted);
 }

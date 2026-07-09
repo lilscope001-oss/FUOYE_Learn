@@ -47,13 +47,18 @@ async function getCurrentUser() {
         .single();
 
     if (!error) {
-        return normalizeUser(data, sessionUser);
+        const normalizedUser = normalizeUser(data, sessionUser);
+        applyUserTheme(normalizedUser);
+        return normalizedUser;
     }
 
     const createdUser = await createUserProfile(sessionUser);
-    return createdUser
+    const user = createdUser
         ? normalizeUser(createdUser, sessionUser)
         : createFallbackUser(sessionUser);
+
+    applyUserTheme(user);
+    return user;
 }
 
 async function fetchAllUsers() {
@@ -103,6 +108,7 @@ function normalizeUser(user, sessionUser = null) {
         streak: user.streak || 0,
         badges: user.badges || [],
         level: user.level || "100L",
+        dark_mode: user.dark_mode === true,
     };
 }
 
@@ -119,6 +125,7 @@ function createFallbackUser(sessionUser) {
         streak: 0,
         badges: [],
         level: metadata.level || "100L",
+        dark_mode: false,
         activity_history: [],
         profile_pending_sync: true,
     };
@@ -137,6 +144,7 @@ function toUserRow(userData) {
     if (userData.xp !== undefined) row.xp = userData.xp;
     if (userData.streak !== undefined) row.streak = userData.streak;
     if (userData.badges !== undefined) row.badges = userData.badges;
+    if (userData.dark_mode !== undefined) row.dark_mode = userData.dark_mode;
 
     return row;
 }
@@ -215,3 +223,40 @@ async function signOutUser() {
     const { error } = await supabaseClient.auth.signOut();
     return { error };
 }
+
+function applyUserTheme(user) {
+    const savedTheme = getSavedTheme(user?.id);
+    const enabled = savedTheme !== null ? savedTheme : user?.dark_mode === true;
+
+    document.body.classList.toggle("dark-mode", enabled);
+    document.documentElement.classList.toggle("dark-mode", enabled);
+}
+
+function getSavedTheme(userId) {
+    const userValue = userId ? localStorage.getItem(`fuoye_dark_mode_${userId}`) : null;
+    const globalValue = localStorage.getItem("fuoye_dark_mode");
+    const value = userValue !== null ? userValue : globalValue;
+
+    if (value === null) return null;
+    return value === "true";
+}
+
+function saveThemePreference(userId, enabled) {
+    localStorage.setItem("fuoye_dark_mode", enabled ? "true" : "false");
+
+    if (userId) {
+        localStorage.setItem(`fuoye_dark_mode_${userId}`, enabled ? "true" : "false");
+    }
+
+    document.body.classList.toggle("dark-mode", enabled);
+    document.documentElement.classList.toggle("dark-mode", enabled);
+}
+
+(function applyInitialTheme() {
+    const enabled = getSavedTheme(null);
+
+    if (enabled !== null) {
+        document.documentElement.classList.toggle("dark-mode", enabled);
+        if (document.body) document.body.classList.toggle("dark-mode", enabled);
+    }
+})();
