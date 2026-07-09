@@ -390,52 +390,417 @@ function generateQuizQuestions(courseCode) {
     if (!course) return [];
 
     const topics = getCourseTopics(course);
-    const distractorTopics = courseCatalog
-        .filter(item => item.code !== course.code)
-        .flatMap(item => getCourseTopics(item))
-        .filter(Boolean);
+    const questions = uniqueQuestions(topics
+        .map(topic => createConceptQuestion(course, topic))
+        .filter(Boolean)
+    ).slice(0, 7);
 
-    const questions = topics.slice(0, 6).map((topic, index) => {
-        const wrongOptions = distractorTopics
-            .slice(index * 3, index * 3 + 3);
-
-        return buildQuestion(
-            `Which topic is part of ${course.code} - ${course.title}?`,
-            topic,
-            wrongOptions
-        );
-    });
-
-    questions.push(buildQuestion(
-        `What is the official course title for ${course.code}?`,
-        course.title,
-        getDifferentCourseTitles(course.code)
-    ));
-
-    questions.push(buildQuestion(
-        `Which level offers ${course.code}?`,
-        course.level,
-        ["100L", "200L", "300L", "400L"].filter(level => level !== course.level)
-    ));
-
-    questions.push(buildQuestion(
-        `Which semester includes ${course.code}?`,
-        course.semester,
-        ["First Semester", "Second Semester"].filter(semester => semester !== course.semester)
-    ));
+    questions.push(createCourseOutcomeQuestion(course));
+    questions.push(createScenarioQuestion(course, topics));
+    questions.push(createAssessmentQuestion(course));
 
     return questions;
 }
 
-function getDifferentCourseTitles(courseCode) {
+const conceptQuestionTemplates = [
+    {
+        keywords: ["database models"],
+        question: "A team must choose how data entities and their relationships will be structured before implementation. What are they comparing?",
+        correct: "Database models such as hierarchical, network, and relational models",
+        wrong: ["CPU scheduling policies", "Optical lens types", "Essay paragraph patterns"]
+    },
+    {
+        keywords: ["entity-relationship"],
+        question: "Before creating tables, an analyst draws entities, attributes, and relationships for a school system. What modelling tool is being used?",
+        correct: "Entity-relationship modelling",
+        wrong: ["Round-robin scheduling", "Fourier transformation", "Thermochemical calculation"]
+    },
+    {
+        keywords: ["relational algebra", "relational calculus"],
+        question: "A database student describes queries using formal operations such as selection, projection, and join. Which foundation is being applied?",
+        correct: "Relational algebra",
+        wrong: ["Boolean circuit timing", "Newtonian mechanics", "Business feasibility analysis"]
+    },
+    {
+        keywords: ["transaction management", "concurrency control"],
+        question: "Two users update related records at the same time. Which DBMS feature helps keep the data consistent?",
+        correct: "Transaction management and concurrency control",
+        wrong: ["Texture mapping", "Oral phonetics", "Permutation and combination"]
+    },
+    {
+        keywords: ["normalisation", "normalization"],
+        question: "A database table stores the same student details in many rows. What design practice should be applied first?",
+        correct: "Normalise the tables to reduce redundancy and update anomalies",
+        wrong: ["Add more duplicate columns for faster typing", "Store all records in one spreadsheet-like table", "Disable transaction control"]
+    },
+    {
+        keywords: ["sql"],
+        question: "A developer needs to create, retrieve, update, and delete records in a relational database. Which tool is most appropriate?",
+        correct: "SQL statements such as DDL and DML commands",
+        wrong: ["A graphics rendering pipeline", "A packet switching protocol", "A binary search tree traversal"]
+    },
+    {
+        keywords: ["process management", "scheduling"],
+        question: "Several programs are ready to run on the CPU. Which operating-system responsibility decides the order they execute?",
+        correct: "Process scheduling",
+        wrong: ["Optical refraction", "Database normalisation", "Chemical bonding"]
+    },
+    {
+        keywords: ["deadlock"],
+        question: "Two processes each hold one resource and wait forever for the other resource. What problem has occurred?",
+        correct: "Deadlock",
+        wrong: ["Cache hit", "Packet forwarding", "Linear interpolation"]
+    },
+    {
+        keywords: ["memory management", "paging", "segmentation", "virtual memory"],
+        question: "An operating system must let programs use memory efficiently without overwriting each other. Which area handles this?",
+        correct: "Memory management",
+        wrong: ["Thermochemistry", "Business model canvas", "Oral phonetics"]
+    },
+    {
+        keywords: ["data types", "variables", "constants"],
+        question: "In a program, why should a variable's data type be chosen carefully?",
+        correct: "It determines the kind of value stored and the valid operations on it",
+        wrong: ["It changes the monitor resolution", "It encrypts every network packet", "It replaces the need for algorithms"]
+    },
+    {
+        keywords: ["control structures", "sequence", "selection", "iteration"],
+        question: "A program must repeat a calculation until a condition is false. Which control structure is needed?",
+        correct: "Iteration",
+        wrong: ["Encapsulation", "Multiplexing", "Referencing"]
+    },
+    {
+        keywords: ["object-oriented", "classes", "objects", "encapsulation", "inheritance", "polymorphism"],
+        question: "A software team groups data and related behaviour into reusable blueprints. Which programming approach are they using?",
+        correct: "Object-oriented programming",
+        wrong: ["Fourier analysis", "Chemical kinetics", "Civic responsibility"]
+    },
+    {
+        keywords: ["stacks", "queues"],
+        question: "A printer processes jobs in the order they arrive. Which data structure best models this behaviour?",
+        correct: "Queue",
+        wrong: ["Stack", "Binary search tree", "Hash function"]
+    },
+    {
+        keywords: ["linked lists"],
+        question: "Which data structure is best when items must be inserted frequently without shifting large array sections?",
+        correct: "Linked list",
+        wrong: ["Fixed-size array only", "Truth table", "Public key certificate"]
+    },
+    {
+        keywords: ["trees", "binary trees", "bst"],
+        question: "A search feature repeatedly chooses left or right branches based on ordered keys. Which structure is most likely being used?",
+        correct: "Binary search tree",
+        wrong: ["Queue", "Truth table", "Memo"]
+    },
+    {
+        keywords: ["sorting", "searching"],
+        question: "A student wants to arrange records alphabetically before lookup. Which algorithm category is most relevant?",
+        correct: "Sorting algorithms",
+        wrong: ["Semantic analysis", "Electrochemistry", "Cultural policy"]
+    },
+    {
+        keywords: ["logic", "propositional", "predicate"],
+        question: "A statement must be tested as either true or false before drawing a conclusion. Which area supports this reasoning?",
+        correct: "Formal logic",
+        wrong: ["Texture mapping", "Organic chemistry", "Business funding"]
+    },
+    {
+        keywords: ["set theory", "relations", "functions"],
+        question: "A lecturer models valid pairings between students and registered courses. Which discrete-structures concept fits best?",
+        correct: "Relations",
+        wrong: ["Thermochemistry", "Optical lenses", "Cache memory"]
+    },
+    {
+        keywords: ["graph theory", "graph algorithms"],
+        question: "Roads between cities are modelled as connections between points. Which computing structure fits this model?",
+        correct: "Graph",
+        wrong: ["Stack frame", "Chemical bond", "Essay outline"]
+    },
+    {
+        keywords: ["boolean algebra", "logic design", "gates", "karnaugh"],
+        question: "A circuit designer simplifies a digital expression before building hardware. Which concept is most useful?",
+        correct: "Boolean algebra and minimisation",
+        wrong: ["Research sampling", "Complex integration", "Marketing strategy"]
+    },
+    {
+        keywords: ["cpu", "instruction set", "registers", "counters", "memory organisation"],
+        question: "A computer executes machine instructions using registers, memory, and a control unit. Which subject studies this organisation?",
+        correct: "Computer organization and architecture",
+        wrong: ["Entrepreneurial finance", "Organic reaction mechanisms", "Oral English"]
+    },
+    {
+        keywords: ["cache memory"],
+        question: "Why is cache memory placed close to the CPU?",
+        correct: "To reduce average memory access time",
+        wrong: ["To store only printed documents", "To replace all secondary storage", "To create database tables"]
+    },
+    {
+        keywords: ["network models", "osi", "tcp/ip"],
+        question: "A network engineer explains communication in layers from physical transmission to applications. Which framework is being used?",
+        correct: "OSI or TCP/IP network model",
+        wrong: ["Entity-relationship model", "Binomial theorem", "UML use case"]
+    },
+    {
+        keywords: ["ip addressing", "subnetting"],
+        question: "An organisation divides one network into smaller logical networks. What is this process called?",
+        correct: "Subnetting",
+        wrong: ["Parsing", "Encapsulation in OOP", "Normalising a database"]
+    },
+    {
+        keywords: ["firewalls", "vpn", "ids", "network security"],
+        question: "A company wants to monitor malicious traffic and control access to its network. Which tools are most relevant?",
+        correct: "Firewalls and intrusion detection systems",
+        wrong: ["Sorting and searching only", "Essay writing and phonetics", "Matrices and determinants"]
+    },
+    {
+        keywords: ["cryptography", "encryption", "digital signatures", "hash functions"],
+        question: "A banking app must prove a message was not altered and came from the claimed sender. Which security concept helps?",
+        correct: "Digital signatures and hashing",
+        wrong: ["Round-robin scheduling", "Karnaugh maps", "Coordinate geometry"]
+    },
+    {
+        keywords: ["html", "css", "javascript", "responsive web design"],
+        question: "A webpage must adapt cleanly to phones and laptops. Which practice addresses this requirement?",
+        correct: "Responsive web design",
+        wrong: ["Deadlock avoidance", "Stoichiometry", "Cache replacement only"]
+    },
+    {
+        keywords: ["restful apis", "web services"],
+        question: "A web app exchanges data with a server using structured endpoints over HTTP. What is it most likely using?",
+        correct: "RESTful APIs",
+        wrong: ["Flip-flop circuits", "Fourier series", "Library catalogues"]
+    },
+    {
+        keywords: ["authentication", "session management"],
+        question: "A web application must remember a user securely after login. Which area handles this?",
+        correct: "Authentication and session management",
+        wrong: ["Texture mapping", "Acid-base titration", "Permutation"]
+    },
+    {
+        keywords: ["hci", "user-centred", "usability", "accessibility"],
+        question: "A team tests whether students can complete tasks easily in an app. Which discipline guides this evaluation?",
+        correct: "Human-computer interaction and usability testing",
+        wrong: ["Compiler optimisation", "Electrostatics", "Oxidation-reduction"]
+    },
+    {
+        keywords: ["algorithm design", "complexity", "asymptotic"],
+        question: "Two algorithms solve the same problem, but one grows much slower as input size increases. What should be compared?",
+        correct: "Time and space complexity",
+        wrong: ["Presentation style", "Molecular geometry", "National values"]
+    },
+    {
+        keywords: ["divide-and-conquer", "greedy", "dynamic programming", "backtracking"],
+        question: "A problem is solved by breaking it into smaller subproblems and combining results. Which design idea is being used?",
+        correct: "Divide-and-conquer",
+        wrong: ["Public key infrastructure", "Business feasibility", "Citation style"]
+    },
+    {
+        keywords: ["lexical analysis", "parsing", "semantic analysis", "code generation"],
+        question: "A compiler checks source code structure against grammar rules. Which phase is involved?",
+        correct: "Parsing",
+        wrong: ["Subnetting", "Sampling", "Heat transfer"]
+    },
+    {
+        keywords: ["clustering", "unsupervised"],
+        question: "A system groups customers without predefined labels. Which machine-learning task is this?",
+        correct: "Clustering",
+        wrong: ["Regression with labels", "Deadlock prevention", "File handling"]
+    },
+    {
+        keywords: ["machine learning", "supervised learning", "classification", "regression"],
+        question: "A model learns from labelled examples to predict whether emails are spam or not. Which learning type is this?",
+        correct: "Supervised learning",
+        wrong: ["Uninformed search", "Manual citation", "Sequential circuit design"]
+    },
+    {
+        keywords: ["simulation", "monte carlo", "stochastic"],
+        question: "A researcher uses repeated random trials to estimate uncertain outcomes. Which method is being applied?",
+        correct: "Monte Carlo simulation",
+        wrong: ["Binary search", "Boolean minimisation", "Technical memo writing"]
+    },
+    {
+        keywords: ["parallel", "gpu", "mpi", "openmp"],
+        question: "A computation is split among many processors to finish faster. Which computing model is being used?",
+        correct: "Parallel computing",
+        wrong: ["Single-table normalisation", "Listening comprehension", "Organic functional grouping"]
+    },
+    {
+        keywords: ["distributed systems", "replication", "fault tolerance", "cloud computing", "microservices"],
+        question: "A service continues operating even when one server fails. Which distributed-systems goal is being achieved?",
+        correct: "Fault tolerance",
+        wrong: ["Trigonometric identity", "Referencing style", "Stoichiometric balance"]
+    },
+    {
+        keywords: ["risk assessment", "incident response", "digital forensics", "cia triad"],
+        question: "An organisation classifies threats, prepares recovery steps, and protects confidentiality, integrity, and availability. Which field is this?",
+        correct: "Information security management",
+        wrong: ["Database indexing only", "Coordinate geometry", "Library organisation"]
+    },
+    {
+        keywords: ["business model canvas", "startup", "venture capital", "digital marketing"],
+        question: "A founder maps customers, value proposition, revenue streams, and partners. Which tool supports this planning?",
+        correct: "Business model canvas",
+        wrong: ["Finite state machine", "Normal distribution", "Assembly instruction"]
+    },
+    {
+        keywords: ["research design", "literature review", "proposal", "technical writing"],
+        question: "Before starting a study, a student reviews previous work and defines methods. Which research activity is this?",
+        correct: "Research design and literature review",
+        wrong: ["Cache mapping", "Optical refraction", "Hydrocarbon naming"]
+    },
+    {
+        keywords: ["hypothesis testing", "probability distributions", "sampling"],
+        question: "A statistician decides whether sample evidence supports a claim about a population. Which procedure is used?",
+        correct: "Hypothesis testing",
+        wrong: ["Lexical analysis", "Inheritance", "Firewall configuration"]
+    },
+    {
+        keywords: ["differentiation", "derivatives"],
+        question: "Which mathematical tool measures the instantaneous rate of change of a function?",
+        correct: "Derivative",
+        wrong: ["Matrix determinant", "Packet switch", "Hash function"]
+    },
+    {
+        keywords: ["integration", "integrals"],
+        question: "Which mathematical process is commonly used to find accumulated area under a curve?",
+        correct: "Integration",
+        wrong: ["Subnetting", "Encapsulation", "Citation"]
+    },
+    {
+        keywords: ["matrices", "determinants", "eigenvalues", "vector spaces"],
+        question: "A system of linear equations is represented compactly for computation. Which mathematical object is commonly used?",
+        correct: "Matrix",
+        wrong: ["Queue", "Firewall", "Memo"]
+    },
+    {
+        keywords: ["newton", "kinematics", "work, energy and power", "gravitation"],
+        question: "A physicist analyses how forces affect motion. Which area of physics is most relevant?",
+        correct: "Mechanics",
+        wrong: ["Organic chemistry", "Web accessibility", "Database security"]
+    },
+    {
+        keywords: ["electrostatics", "electric current", "magnetic fields"],
+        question: "A circuit contains voltage sources, current flow, and magnetic effects. Which physics area studies it?",
+        correct: "Electricity and magnetism",
+        wrong: ["Compiler parsing", "Entrepreneurial finance", "Sentence structure"]
+    },
+    {
+        keywords: ["atomic structure", "chemical bonding", "stoichiometry"],
+        question: "A chemist calculates reactant quantities from a balanced chemical equation. Which concept is being used?",
+        correct: "Stoichiometry",
+        wrong: ["Object polymorphism", "Subnetting", "Fourier transform"]
+    },
+    {
+        keywords: ["hydrocarbons", "functional groups", "reaction mechanisms"],
+        question: "A compound's reactions are predicted from the group of atoms attached to its carbon chain. Which concept is central?",
+        correct: "Functional groups",
+        wrong: ["Finite state machines", "Sampling error", "User-centred design"]
+    },
+    {
+        keywords: ["reading comprehension", "essay writing", "technical and report writing", "presentation skills"],
+        question: "A student prepares a clear academic report with evidence, structure, and audience awareness. Which skill is being assessed?",
+        correct: "Academic and technical communication",
+        wrong: ["Pipeline processing", "Electrochemical equilibrium", "Graph traversal"]
+    },
+    {
+        keywords: ["referencing", "citation", "plagiarism", "academic integrity"],
+        question: "A student uses another author's idea in an assignment. What should they do to maintain academic integrity?",
+        correct: "Cite and reference the source properly",
+        wrong: ["Remove all punctuation", "Encrypt the paragraph", "Convert it to binary"]
+    },
+    {
+        keywords: ["nigerian", "culture", "government", "civic"],
+        question: "A course examines national values, cultural diversity, and civic responsibility. What is the main learning goal?",
+        correct: "Understanding society, citizenship, and cultural identity",
+        wrong: ["Designing CPU registers", "Training neural networks", "Balancing chemical equations"]
+    }
+];
+
+function createConceptQuestion(course, topic) {
+    const normalizedTopic = topic.toLowerCase();
+    const template = conceptQuestionTemplates.find(item =>
+        item.keywords.some(keyword => normalizedTopic.includes(keyword))
+    );
+
+    if (template) {
+        return buildQuestion(template.question, template.correct, template.wrong);
+    }
+
+    return createAppliedTopicQuestion(course, topic);
+}
+
+function createAppliedTopicQuestion(course, topic) {
+    return buildQuestion(
+        `A ${course.code} exam asks students to apply "${topic}" to a realistic problem. What response would earn the most credit?`,
+        "Explain the concept, justify why it matters, and apply it to a relevant example",
+        [
+            "List isolated keywords without explaining their meaning",
+            "Answer with an unrelated concept from another course",
+            "Copy the course title without solving the problem"
+        ]
+    );
+}
+
+function uniqueQuestions(questions) {
+    const seen = new Set();
+
+    return questions.filter(question => {
+        if (seen.has(question.question)) return false;
+        seen.add(question.question);
+        return true;
+    });
+}
+
+function createCourseOutcomeQuestion(course) {
+    return buildQuestion(
+        `What best describes the main focus of ${course.code} - ${course.title}?`,
+        simplifyOutline(course.outline),
+        getDifferentCourseFocus(course.code)
+    );
+}
+
+function createScenarioQuestion(course, topics) {
+    const firstTopic = topics[0] || course.title;
+    const secondTopic = topics[1] || firstTopic;
+
+    return buildQuestion(
+        `A lecturer combines "${firstTopic}" with "${secondTopic}" in an assessment. What kind of question is most appropriate?`,
+        `A question that tests understanding and application within ${course.title}`,
+        [
+            "A question that only asks students to copy the timetable",
+            "A question unrelated to the course outline",
+            "A question that ignores both concepts completely"
+        ]
+    );
+}
+
+function createAssessmentQuestion(course) {
+    return buildQuestion(
+        `How should a student prepare professionally for a quiz in ${course.code}?`,
+        "Study the concepts, examples, definitions, and real applications in the outline",
+        [
+            "Read only the course title and skip the outline",
+            "Depend only on guessing the option positions",
+            "Study unrelated courses instead"
+        ]
+    );
+}
+
+function simplifyOutline(outline) {
+    const topics = outline.split(";").slice(0, 3).map(topic => topic.trim());
+    return `Understanding ${topics.join(", ")}`;
+}
+
+function getDifferentCourseFocus(courseCode) {
     return courseCatalog
         .filter(course => course.code !== courseCode)
         .slice(0, 3)
-        .map(course => course.title);
+        .map(course => simplifyOutline(course.outline));
 }
 
 function buildQuestion(question, correctOption, wrongOptions) {
-    const options = [correctOption, ...wrongOptions]
+    const options = [...new Set([correctOption, ...wrongOptions])]
         .filter(Boolean)
         .slice(0, 4);
 
