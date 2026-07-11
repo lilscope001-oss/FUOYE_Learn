@@ -137,6 +137,45 @@ th{
     transform:translateX(3px);
 }
 
+.mobile-menu-toggle{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--primary);
+    color:#ffffff;
+    border:1px solid rgba(47,142,99,.32);
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:800;
+    padding:11px 14px;
+    transition:background .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+
+.mobile-menu-toggle:hover{
+    background:var(--primary-dark);
+    box-shadow:0 8px 18px rgba(35,75,61,.12);
+    transform:translateY(-1px);
+}
+
+.mobile-menu-toggle .mobile-menu-icon{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.mobile-menu-toggle .mobile-menu-icon i{
+    display:block;
+    width:18px;
+    height:2px;
+    background:currentColor;
+    border-radius:999px;
+}
+
+.mobile-menu-toggle strong{
+    font-size:14px;
+}
+
 .top-nav{
     width:100%;
     background:#ffffff;
@@ -395,18 +434,6 @@ th{
         margin:0 auto;
     }
 
-    .nav-links{
-        display:grid;
-        grid-template-columns:repeat(2,minmax(0,1fr));
-        gap:10px;
-    }
-
-    .nav-links a{
-        justify-content:center;
-        text-align:center;
-        min-height:46px;
-    }
-
     .header{
         flex-direction:column;
         gap:15px;
@@ -415,21 +442,56 @@ th{
 
 @media(max-width:720px){
     .top-nav{
-        align-items:stretch;
+        align-items:center;
         padding:12px 14px;
         gap:10px;
     }
 
     .back-link{
-        width:100%;
+        flex:1 1 auto;
         text-align:center;
+    }
+
+    .top-nav .mobile-menu-toggle{
+        display:flex;
+        flex:0 0 auto;
+    }
+
+    .sidebar .mobile-menu-toggle{
+        display:flex;
+        width:100%;
+        margin-bottom:12px;
+    }
+
+    .sidebar .mobile-menu-toggle .mobile-menu-icon{
+        flex:0 0 auto;
+    }
+
+    .sidebar .nav-links{
+        display:none;
+    }
+
+    .sidebar.mobile-nav-open .nav-links{
+        display:flex;
+    }
+
+    .sidebar.mobile-nav-open .nav-links a{
+        justify-content:center;
+        text-align:center;
+        min-height:46px;
     }
 
     .nav-links-inline{
         width:100%;
-        display:grid;
-        grid-template-columns:repeat(2,minmax(0,1fr));
+        display:none;
         gap:8px;
+        order:3;
+        padding-top:2px;
+    }
+
+    .top-nav.mobile-nav-open .nav-links-inline{
+        display:grid;
+        grid-template-columns:1fr;
     }
 
     .nav-links-inline a{
@@ -456,11 +518,6 @@ th{
 }
 
 @media(max-width:480px){
-    .nav-links,
-    .nav-links-inline{
-        grid-template-columns:1fr;
-    }
-
     .top-nav{
         position:relative;
     }
@@ -525,6 +582,12 @@ body.dark-mode .nav-links-inline a{
     background:#17211d;
     border-color:var(--line);
     color:var(--text);
+}
+
+body.dark-mode .mobile-menu-toggle{
+    background:#20342d;
+    border-color:#284139;
+    color:#8ee0b5;
 }
 
 body.dark-mode .nav-links a:hover,
