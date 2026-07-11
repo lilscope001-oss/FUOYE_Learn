@@ -82,6 +82,49 @@ href="css/style.css">
     color:#3FAF7A;
 }
 
+body.dark-mode .quiz-container{
+    background:#17211d;
+    border:1px solid #284139;
+    color:#e9f4ee;
+}
+
+body.dark-mode .timer-box,
+body.dark-mode .progress-box,
+body.dark-mode .option{
+    background:#20342d;
+    color:#e9f4ee;
+}
+
+@media(max-width:700px){
+    .quiz-container{
+        margin:20px 12px;
+        padding:20px;
+        border-radius:8px;
+    }
+
+    .question{
+        font-size:19px;
+    }
+
+    .quiz-meta{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .timer-box,
+    .progress-box,
+    .quiz-btn,
+    #resultActions .course-btn,
+    .score-box .course-btn{
+        width:100%;
+        text-align:center;
+    }
+
+    .option{
+        padding:14px;
+    }
+}
+
 </style>
 
 </head>
@@ -89,7 +132,7 @@ href="css/style.css">
 <body>
 
 <header class="top-nav">
-    <a href="courses.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <a href="courses.html" onclick="goBack(event)" class="back-link">Back To Courses</a>
     <ul class="nav-links-inline">
         <li><a href="index.html">Dashboard</a></li>
         <li><a href="courses.html">Courses</a></li>

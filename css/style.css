@@ -5,6 +5,11 @@
     font-family: "Segoe UI", sans-serif;
 }
 
+html{
+    width:100%;
+    overflow-x:hidden;
+}
+
 :root{
     --primary:#3FAF7A;
     --primary-dark:#2F8E63;
@@ -22,6 +27,50 @@
 body{
     background:var(--bg);
     color:var(--text);
+    width:100%;
+    min-width:0;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+}
+
+img,
+svg,
+video{
+    max-width:100%;
+    height:auto;
+}
+
+input,
+select,
+textarea,
+button{
+    font:inherit;
+    max-width:100%;
+}
+
+h1{
+    font-size:clamp(26px,5vw,38px);
+    line-height:1.15;
+}
+
+h2{
+    font-size:clamp(22px,4vw,30px);
+    line-height:1.2;
+}
+
+h3{
+    line-height:1.25;
+}
+
+p,
+li,
+a,
+span,
+strong,
+label,
+td,
+th{
+    overflow-wrap:anywhere;
 }
 
 .container{
@@ -56,10 +105,13 @@ body{
 
 .nav-links{
     list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
 }
 
 .nav-links li{
-    margin-bottom:10px;
+    margin-bottom:0;
 }
 
 .nav-links a{
@@ -98,6 +150,7 @@ body{
     position:sticky;
     top:0;
     z-index:20;
+    overflow:hidden;
 }
 
 .nav-links-inline{
@@ -107,6 +160,7 @@ body{
     list-style:none;
     margin:0;
     padding:0;
+    min-width:0;
 }
 
 .nav-links-inline li{
@@ -123,6 +177,7 @@ body{
     display:flex;
     align-items:center;
     gap:8px;
+    white-space:nowrap;
 }
 
 .nav-links-inline a:hover,
@@ -191,6 +246,7 @@ body{
 .main{
     flex:1;
     padding:30px;
+    min-width:0;
 }
 
 .header{
@@ -284,6 +340,7 @@ body{
     padding:10px 15px;
     border-radius:8px;
     font-weight:600;
+    text-align:center;
 }
 
 .leaderboard{
@@ -323,11 +380,102 @@ body{
         width:100%;
         min-height:auto;
         position:relative;
+        top:auto;
+        border-right:none;
+        border-bottom:1px solid var(--line);
+    }
+
+    .logo{
+        margin-bottom:16px;
+        padding-bottom:14px;
+    }
+
+    .logo img{
+        max-width:170px;
+        margin:0 auto;
+    }
+
+    .nav-links{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+    }
+
+    .nav-links a{
+        justify-content:center;
+        text-align:center;
+        min-height:46px;
     }
 
     .header{
         flex-direction:column;
         gap:15px;
+    }
+}
+
+@media(max-width:720px){
+    .top-nav{
+        align-items:stretch;
+        padding:12px 14px;
+        gap:10px;
+    }
+
+    .back-link{
+        width:100%;
+        text-align:center;
+    }
+
+    .nav-links-inline{
+        width:100%;
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px;
+    }
+
+    .nav-links-inline a{
+        justify-content:center;
+        text-align:center;
+        padding:10px 8px;
+        white-space:normal;
+        min-height:42px;
+    }
+
+    .main{
+        padding:18px;
+    }
+
+    .stats,
+    .courses{
+        grid-template-columns:1fr;
+    }
+
+    .card,
+    .course-card{
+        border-radius:8px;
+    }
+}
+
+@media(max-width:480px){
+    .nav-links,
+    .nav-links-inline{
+        grid-template-columns:1fr;
+    }
+
+    .top-nav{
+        position:relative;
+    }
+
+    .sidebar{
+        padding:16px 12px;
+    }
+
+    .hero{
+        padding:22px;
+        border-radius:8px;
+    }
+
+    .course-btn{
+        width:100%;
     }
 }
 

@@ -24,6 +24,7 @@ padding:20px;
 border-radius:15px;
 margin-bottom:20px;
 box-shadow:0 4px 12px rgba(0,0,0,.05);
+overflow-x:auto;
 }
 
 table{
@@ -50,8 +51,89 @@ color:white;
 }
 
 .delete-btn{
-background:red;
+background:#d9534f;
 color:white;
+}
+
+body.dark-mode .admin-card{
+background:#17211d;
+border:1px solid #284139;
+color:#e9f4ee;
+}
+
+@media(max-width:700px){
+    .admin-container{
+        margin:20px auto;
+        padding:12px;
+    }
+
+    .admin-card{
+        padding:16px;
+        border-radius:8px;
+    }
+
+    table,
+    thead,
+    tbody,
+    tr,
+    td{
+        display:block;
+        width:100%;
+    }
+
+    thead{
+        display:none;
+    }
+
+    tr{
+        border:1px solid #e8f0eb;
+        border-radius:8px;
+        margin-bottom:12px;
+        padding:10px;
+        background:#fff;
+    }
+
+    td{
+        border-bottom:1px solid #edf1ee;
+        display:flex;
+        justify-content:space-between;
+        gap:14px;
+        padding:10px 0;
+        font-size:14px;
+        text-align:right;
+    }
+
+    td:last-child{
+        border-bottom:none;
+        display:block;
+        text-align:left;
+    }
+
+    td::before{
+        color:#5f766d;
+        content:"";
+        font-weight:bold;
+        text-align:left;
+    }
+
+    td:nth-child(1)::before{content:"Name";}
+    td:nth-child(2)::before{content:"Email";}
+    td:nth-child(3)::before{content:"XP";}
+    td:nth-child(4)::before{content:"Actions";display:block;margin-bottom:8px;}
+
+    button{
+        width:100%;
+        margin-bottom:6px;
+    }
+
+    body.dark-mode tr{
+        background:#17211d;
+        border-color:#284139;
+    }
+
+    body.dark-mode td{
+        border-bottom-color:#284139;
+    }
 }
 
 </style>
@@ -61,7 +143,7 @@ color:white;
 <body>
 
 <header class="top-nav">
-    <a href="index.html" onclick="goBack(event)" class="back-link">← Back</a>
+    <a href="index.html" onclick="goBack(event)" class="back-link">Back To Dashboard</a>
     <ul class="nav-links-inline">
         <li><a href="index.html">Dashboard</a></li>
         <li><a href="courses.html">Courses</a></li>

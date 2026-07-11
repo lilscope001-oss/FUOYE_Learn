@@ -17,6 +17,7 @@
     align-items:center;
     min-height:100vh;
     background:#FAF8F2;
+    padding:20px;
 }
 
 .auth-card{
@@ -100,6 +101,31 @@
     color:red;
     margin-bottom:10px;
     text-align:center;
+}
+
+@media(max-width:520px){
+    .auth-container{
+        align-items:flex-start;
+        padding:16px 12px;
+    }
+
+    .auth-card{
+        padding:24px 18px;
+        border-radius:8px;
+    }
+
+    .auth-logo{
+        font-size:24px;
+    }
+
+    .auth-brand{
+        gap:10px;
+        flex-wrap:wrap;
+    }
+
+    .auth-brand img{
+        max-height:48px;
+    }
 }
 
 </style>

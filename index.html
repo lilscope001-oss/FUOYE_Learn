@@ -329,6 +329,10 @@ color:#667a72;
         width:100%;
     }
 
+    .dashboard-main{
+        max-width:none;
+    }
+
     .dashboard-grid,
     .dashboard-hero{
         grid-template-columns:1fr;
@@ -341,17 +345,60 @@ color:#667a72;
 
 @media(max-width:700px){
     .dashboard-main{
-        padding:20px;
+        padding:16px;
     }
 
     .dashboard-hero h1{
         font-size:28px;
     }
 
+    .dashboard-header,
+    .dashboard-hero,
+    .dashboard-card{
+        padding:18px;
+    }
+
+    .dashboard-header{
+        align-items:stretch;
+    }
+
+    .profile-box{
+        width:100%;
+        min-width:0;
+    }
+
+    .stats,
+    .courses{
+        grid-template-columns:1fr;
+    }
+
+    .card-heading{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
     .hero-actions .course-btn,
-    .hero-actions .secondary-btn{
+    .hero-actions .secondary-btn,
+    .card-heading .course-btn{
         width:100%;
         text-align:center;
+    }
+}
+
+@media(max-width:420px){
+    .dashboard-main{
+        padding:12px;
+    }
+
+    .dashboard-header,
+    .dashboard-hero,
+    .dashboard-card,
+    .metric-card{
+        padding:16px;
+    }
+
+    .dashboard-hero h1{
+        font-size:25px;
     }
 }
 
