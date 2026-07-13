@@ -731,16 +731,98 @@ function createConceptQuestion(course, topic) {
 }
 
 function createAppliedTopicQuestion(course, topic) {
+    const cleanTopic = topic.trim().replace(/\.$/, "");
+    const topicTemplate = appliedTopicQuestionTemplates.find(item =>
+        item.keywords.some(keyword => cleanTopic.toLowerCase().includes(keyword))
+    );
+
+    if (topicTemplate) {
+        return buildQuestion(topicTemplate.question(course, cleanTopic), topicTemplate.correct, topicTemplate.wrong);
+    }
+
     return buildQuestion(
-        `A ${course.code} exam asks students to apply "${topic}" to a realistic problem. What response would earn the most credit?`,
-        "Explain the concept, justify why it matters, and apply it to a relevant example",
+        `Which statement best explains ${cleanTopic.toLowerCase()} in ${course.code}?`,
+        `It is a core idea in ${course.title} that helps students understand and solve related problems`,
         [
-            "List isolated keywords without explaining their meaning",
-            "Answer with an unrelated concept from another course",
-            "Copy the course title without solving the problem"
+            "It is only the course title and has no practical meaning",
+            "It should be memorised without understanding examples or uses",
+            "It is unrelated to the course and should be ignored"
         ]
     );
 }
+
+const appliedTopicQuestionTemplates = [
+    {
+        keywords: ["computer hardware components"],
+        question: course => `In ${course.code}, which statement best describes computer hardware components?`,
+        correct: "They are the physical parts of a computer system, including input, processing, storage, and output devices",
+        wrong: [
+            "They are only the programs installed on a computer",
+            "They are rules for writing essays and reports",
+            "They are network passwords used to secure accounts"
+        ]
+    },
+    {
+        keywords: ["software"],
+        question: course => `In ${course.code}, what is the role of software in a computer system?`,
+        correct: "Software provides the instructions that tell hardware what tasks to perform",
+        wrong: [
+            "Software is the physical casing of the computer",
+            "Software replaces every hardware component",
+            "Software is only used for storing electricity"
+        ]
+    },
+    {
+        keywords: ["number systems", "data representation"],
+        question: course => `Why are number systems and data representation important in ${course.code}?`,
+        correct: "They explain how computers store and process information internally",
+        wrong: [
+            "They are used only for drawing website layouts",
+            "They remove the need for memory and storage",
+            "They are unrelated to computer operations"
+        ]
+    },
+    {
+        keywords: ["problem-solving concepts", "algorithm", "flowcharts", "pseudocode"],
+        question: course => `What is the best reason for learning problem-solving methods in ${course.code}?`,
+        correct: "They help students plan logical steps before writing or implementing a solution",
+        wrong: [
+            "They encourage guessing before understanding the problem",
+            "They are used only to decorate project reports",
+            "They prevent students from testing their ideas"
+        ]
+    },
+    {
+        keywords: ["operating system", "file management"],
+        question: course => `Which task is most closely related to operating system fundamentals in ${course.code}?`,
+        correct: "Managing computer resources, files, processes, and user interaction",
+        wrong: [
+            "Balancing chemical equations",
+            "Writing only business feasibility reports",
+            "Drawing trigonometric graphs by hand"
+        ]
+    },
+    {
+        keywords: ["computer ethics", "security"],
+        question: course => `Which action reflects computer ethics and security awareness in ${course.code}?`,
+        correct: "Protecting data, respecting privacy, and using digital systems responsibly",
+        wrong: [
+            "Sharing passwords publicly for convenience",
+            "Copying another student's work without credit",
+            "Ignoring malware warnings on a device"
+        ]
+    },
+    {
+        keywords: ["internet", "digital literacy", "information retrieval"],
+        question: course => `What does digital literacy help a student do in ${course.code}?`,
+        correct: "Find, evaluate, use, and reference information responsibly with digital tools",
+        wrong: [
+            "Avoid all online academic resources",
+            "Replace research with random guessing",
+            "Use sources without checking credibility"
+        ]
+    }
+];
 
 function uniqueQuestions(questions) {
     const seen = new Set();
@@ -765,12 +847,12 @@ function createScenarioQuestion(course, topics) {
     const secondTopic = topics[1] || firstTopic;
 
     return buildQuestion(
-        `A lecturer combines "${firstTopic}" with "${secondTopic}" in an assessment. What kind of question is most appropriate?`,
-        `A question that tests understanding and application within ${course.title}`,
+        `Which learning task best connects ${firstTopic.toLowerCase()} and ${secondTopic.toLowerCase()} in ${course.code}?`,
+        `Use both concepts to explain a practical issue in ${course.title}`,
         [
-            "A question that only asks students to copy the timetable",
-            "A question unrelated to the course outline",
-            "A question that ignores both concepts completely"
+            "Memorise both phrases without explaining how they work",
+            "Ignore the first concept and answer only with the course title",
+            "Choose an unrelated topic from another course"
         ]
     );
 }
