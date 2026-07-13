@@ -14,53 +14,209 @@ href="css/style.css">
 <style>
 
 .quiz-container{
-    max-width:800px;
-    margin:50px auto;
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    max-width:920px;
+    margin:36px auto;
+    background:linear-gradient(180deg,#ffffff 0%,#fbfffd 100%);
+    padding:0;
+    border-radius:18px;
+    box-shadow:0 18px 40px rgba(35,75,61,.12);
+    border:1px solid rgba(63,175,122,.18);
+    overflow:hidden;
+}
+
+.quiz-hero{
+    background:linear-gradient(135deg,#234B3D,#2F8E63);
+    color:#ffffff;
+    padding:26px 30px;
+    display:flex;
+    justify-content:space-between;
+    gap:18px;
+    align-items:flex-start;
+}
+
+.quiz-hero h1{
+    margin:0 0 8px;
+}
+
+.quiz-subtitle{
+    color:rgba(255,255,255,.82);
+    margin:0;
+    max-width:600px;
+}
+
+.quiz-rank-card{
+    min-width:170px;
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:12px;
+    padding:14px;
+    text-align:center;
+}
+
+.rank-label{
+    display:block;
+    font-size:12px;
+    opacity:.8;
+    margin-bottom:4px;
+}
+
+.rank-value{
+    display:block;
+    font-size:20px;
+    font-weight:900;
+}
+
+.quiz-body{
+    padding:26px 30px 30px;
 }
 
 .question{
     font-size:22px;
-    margin-bottom:20px;
+    line-height:1.35;
+    margin:8px 0 20px;
+    font-weight:800;
 }
 
 .quiz-meta{
-    display:flex;
-    justify-content:space-between;
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
     gap:12px;
     align-items:center;
-    flex-wrap:wrap;
-    margin:16px 0 20px;
+    margin:0 0 18px;
 }
 
 .timer-box,
-.progress-box{
+.progress-box,
+.streak-box,
+.xp-box{
     background:#FAF8F2;
     color:#234B3D;
-    border-radius:8px;
-    padding:10px 14px;
+    border-radius:12px;
+    padding:12px 14px;
     font-weight:bold;
+    border:1px solid rgba(63,175,122,.18);
+    min-height:62px;
+}
+
+.meta-label{
+    display:block;
+    color:#60766d;
+    font-size:12px;
+    margin-bottom:4px;
+}
+
+.meta-value{
+    display:block;
+    font-size:17px;
+}
+
+.timer-box.timer-warning{
+    background:#fff4e1;
+    color:#9a5c00;
+    border-color:rgba(217,182,80,.42);
+}
+
+.quiz-progress-track{
+    height:10px;
+    background:#e8f3ed;
+    border-radius:999px;
+    overflow:hidden;
+    margin:10px 0 22px;
+}
+
+.quiz-progress-fill{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#3FAF7A,#D9B650);
+    border-radius:inherit;
+    transition:width .3s ease;
 }
 
 .option{
-    background:#f4f4f4;
-    padding:15px;
-    margin-bottom:10px;
-    border-radius:10px;
+    background:#ffffff;
+    padding:16px 18px;
+    margin-bottom:12px;
+    border-radius:12px;
+    border:1px solid #e4eee8;
     cursor:pointer;
-    transition:.3s;
+    transition:.2s;
+    font-weight:650;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
 }
 
 .option:hover{
     background:#e6f7ef;
+    border-color:rgba(63,175,122,.45);
+    transform:translateY(-1px);
 }
 
 .option.selected{
-    background:#bff0d2;
+    background:#effaf4;
     border:1px solid #3FAF7A;
+}
+
+.option.correct{
+    background:#e6f7ef;
+    border-color:#3FAF7A;
+    color:#234B3D;
+}
+
+.option.wrong{
+    background:#fff0f0;
+    border-color:#dc6c68;
+    color:#7f2421;
+}
+
+.option.disabled{
+    pointer-events:none;
+}
+
+.option-letter{
+    flex:0 0 28px;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:#edf6f1;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color:#2F8E63;
+    font-weight:900;
+}
+
+.option.correct .option-letter{
+    background:#3FAF7A;
+    color:#ffffff;
+}
+
+.option.wrong .option-letter{
+    background:#d9534f;
+    color:#ffffff;
+}
+
+.feedback-panel{
+    display:none;
+    padding:14px 16px;
+    border-radius:12px;
+    margin:16px 0 4px;
+    border:1px solid rgba(63,175,122,.22);
+    background:#f5fbf7;
+    font-weight:700;
+}
+
+.feedback-panel.is-correct{
+    display:block;
+    background:#eefaf4;
+    color:#234B3D;
+}
+
+.feedback-panel.is-wrong{
+    display:block;
+    background:#fff5f5;
+    border-color:rgba(217,83,79,.28);
+    color:#7f2421;
 }
 
 .quiz-btn{
@@ -71,15 +227,80 @@ href="css/style.css">
     color:white;
     border-radius:8px;
     cursor:pointer;
+    font-weight:800;
+    transition:.2s;
+}
+
+.quiz-btn:hover{
+    background:#2F8E63;
+    transform:translateY(-1px);
+    box-shadow:0 8px 18px rgba(35,75,61,.12);
+}
+
+.quiz-btn:disabled{
+    cursor:not-allowed;
+    opacity:.62;
+    transform:none;
+    box-shadow:none;
 }
 
 .score-box{
     text-align:center;
     display:none;
+    padding:30px;
 }
 
 .score-box h1{
     color:#3FAF7A;
+}
+
+.result-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:120px;
+    min-height:120px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#3FAF7A,#D9B650);
+    color:#ffffff;
+    font-size:34px;
+    font-weight:900;
+    margin-bottom:16px;
+    box-shadow:0 18px 38px rgba(63,175,122,.2);
+}
+
+.result-stats{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px;
+    margin:22px 0;
+    text-align:left;
+}
+
+.result-stat{
+    background:#FAF8F2;
+    border:1px solid #e4eee8;
+    border-radius:12px;
+    padding:14px;
+}
+
+.result-stat strong{
+    display:block;
+    font-size:22px;
+    color:#234B3D;
+}
+
+.result-stat span{
+    color:#60766d;
+    font-size:13px;
+    font-weight:700;
+}
+
+#resultActions{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
 }
 
 body.dark-mode .quiz-container{
@@ -88,18 +309,74 @@ body.dark-mode .quiz-container{
     color:#e9f4ee;
 }
 
+body.dark-mode .quiz-hero{
+    background:linear-gradient(135deg,#17211d,#20342d);
+}
+
 body.dark-mode .timer-box,
 body.dark-mode .progress-box,
-body.dark-mode .option{
+body.dark-mode .streak-box,
+body.dark-mode .xp-box,
+body.dark-mode .option,
+body.dark-mode .result-stat{
     background:#20342d;
     color:#e9f4ee;
+    border-color:#284139;
+}
+
+body.dark-mode .quiz-progress-track{
+    background:#20342d;
+}
+
+body.dark-mode .feedback-panel.is-correct{
+    background:#20342d;
+    color:#8ee0b5;
+}
+
+body.dark-mode .feedback-panel.is-wrong{
+    background:#2c1d1d;
+    color:#ffb4b1;
+}
+
+body.dark-mode .option.correct{
+    background:#173b2a;
+    border-color:#3FAF7A;
+    color:#dff8ea;
+}
+
+body.dark-mode .option.wrong{
+    background:#3a2020;
+    border-color:#d9534f;
+    color:#ffd7d5;
+}
+
+body.dark-mode .result-stat strong{
+    color:#8ee0b5;
+}
+
+body.dark-mode .result-stat span,
+body.dark-mode .meta-label{
+    color:#b7c7bf;
 }
 
 @media(max-width:700px){
     .quiz-container{
         margin:20px 12px;
-        padding:20px;
         border-radius:8px;
+    }
+
+    .quiz-hero,
+    .quiz-body,
+    .score-box{
+        padding:20px;
+    }
+
+    .quiz-hero{
+        flex-direction:column;
+    }
+
+    .quiz-rank-card{
+        width:100%;
     }
 
     .question{
@@ -107,8 +384,7 @@ body.dark-mode .option{
     }
 
     .quiz-meta{
-        align-items:stretch;
-        flex-direction:column;
+        grid-template-columns:1fr 1fr;
     }
 
     .timer-box,
@@ -122,6 +398,10 @@ body.dark-mode .option{
 
     .option{
         padding:14px;
+    }
+
+    .result-stats{
+        grid-template-columns:1fr;
     }
 }
 
@@ -150,13 +430,44 @@ body.dark-mode .option{
 
 <div class="quiz-container">
 
-<h1 id="courseTitle">
-Quiz Arena
-</h1>
+<div class="quiz-hero">
+    <div>
+        <h1 id="courseTitle">
+        Quiz Arena
+        </h1>
+        <p class="quiz-subtitle" id="quizSubtitle">
+        Build streaks, earn XP, and unlock the next course by passing this challenge.
+        </p>
+    </div>
+    <div class="quiz-rank-card">
+        <span class="rank-label">Arena Rank</span>
+        <span class="rank-value" id="arenaRank">Rookie</span>
+    </div>
+</div>
+
+<div class="quiz-body">
 
 <div class="quiz-meta">
-    <div class="progress-box" id="quizProgress">Question 1</div>
-    <div class="timer-box">Time Left: <span id="timer">00:00</span></div>
+    <div class="progress-box">
+        <span class="meta-label">Progress</span>
+        <span class="meta-value" id="quizProgress">Question 1</span>
+    </div>
+    <div class="timer-box" id="timerBox">
+        <span class="meta-label">Time Left</span>
+        <span class="meta-value" id="timer">00:00</span>
+    </div>
+    <div class="streak-box">
+        <span class="meta-label">Current Streak</span>
+        <span class="meta-value" id="streakCount">0 Combo</span>
+    </div>
+    <div class="xp-box">
+        <span class="meta-label">Reward Preview</span>
+        <span class="meta-value" id="xpPreview">0 XP</span>
+    </div>
+</div>
+
+<div class="quiz-progress-track">
+    <div class="quiz-progress-fill" id="progressFill"></div>
 </div>
 
 <div id="quizArea">
@@ -166,11 +477,15 @@ class="question"></div>
 
 <div id="options"></div>
 
+<div class="feedback-panel" id="answerFeedback"></div>
+
 <button
 id="nextBtn"
 class="quiz-btn">
-Next Question
+Continue
 </button>
+
+</div>
 
 </div>
 
@@ -178,11 +493,15 @@ Next Question
 id="result"
 class="score-box">
 
+<div class="result-badge" id="resultGrade">A</div>
+
 <h1>Quiz Completed <img src="assets/icons/celebration.svg" alt="" class="icon-title"></h1>
 
 <h2 id="scoreText"></h2>
 
 <p id="xpText"></p>
+
+<div class="result-stats" id="resultStats"></div>
 
 <p id="resultMessage"></p>
 
